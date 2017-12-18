@@ -1,10 +1,16 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
-
+import axios from 'axios';
+ 
 class App extends Component {
+  componentWillMount() {
+    axios.get('/api/gallery')
+        .then(results => console.log(`results: `, results.data));
+  }
+  
   render() {
-    return (
+    return ( 
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo"/>
