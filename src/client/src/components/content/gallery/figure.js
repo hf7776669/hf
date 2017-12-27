@@ -31,8 +31,8 @@ class GalleryFigure extends React.Component {
           <ItemCover>
             <a href={link}>
               <Img
-                  src={'http://' + imageLink}
-                  /* src={'https://i.hentaifox.com/002/1139352/thumb.jpg'}*/
+                  //                  src={'http://' + imageLink}
+                  src={'https://i.hentaifox.com/002/1139352/thumb.jpg'}
                   alt={this.props.gallery.name}/>
             </a>
           </ItemCover>

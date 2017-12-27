@@ -72,6 +72,15 @@ class Details extends Component {
 
   render() {
     const {name, link, tags, pages} = this.props.gallery;
+    //TODO: Create separate components for
+//    1. Info {name, pages, author, pages, category}
+//    2. Tags
+//    3. Actions 
+//    - Download
+//    - Read
+//    - Series
+//    - Ignore
+    
     return (
         <Wrapper>
           <ul>

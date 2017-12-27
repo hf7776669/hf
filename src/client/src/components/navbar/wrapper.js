@@ -6,7 +6,7 @@ export default styled.div`
   display: flex;
   border: black;
   border-bottom: 1px solid #333;
-  background: #ff9f08;
+  background: black;
   text-align: center;
   font-size:1.5em;
   padding: 5px 15px 0 15px;

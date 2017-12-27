@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import SignIn from 'react-icons/lib/fa/sign-in';
 
 const DivRight = styled.div`   
-  align-self: flex-end;
+  align-self: stretch;
   display: flex;
   align-items: center;
 `;
 
 const A = styled.a` 
-  color: black;
+  color: white;
   text-shadow: none;
   cursor: pointer;
   text-decoration: none;
