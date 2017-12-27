@@ -8,6 +8,7 @@
     "react-app-rewire-styled-components": "^3.0.0",
     "react-app-rewired"                 : "^1.4.0",
     "react-dom"                         : "^16.2.0",
+    "react-icons"                       : "^2.2.7",
     "react-scripts"                     : "1.0.17",
     "styled-components"                 : "^2.3.0"
   },

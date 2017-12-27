@@ -14,7 +14,7 @@ const gallerySchema = new Schema({
   imageLink   : {type: String, required: true},
   parodies    : Array,
   category    : Array,
-  rating      : Number,
+  rating      : Number, 
   series      : String,
   ignore      : Boolean,
   ignoreReason: String
@@ -24,11 +24,11 @@ gallerySchema.statics.bulkInsert = function(models, fn) {
 
   if (!models || !models.length) return fn(null);
 
-  var bulk = this.collection.initializeOrderedBulkOp();
+  let bulk = this.collection.initializeOrderedBulkOp();
   if (!bulk) return fn(
       'bulkInsertModels: MongoDb connection is not yet established');
 
-  for (var i = 0; i < models.length; i++) {
+  for (let i = 0; i < models.length; i++) {
     bulk.insert(models[i]);
   }
 

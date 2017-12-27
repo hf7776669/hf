@@ -6,7 +6,7 @@ const app = express();
 app.use('/api', apiRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Hi There');
+  res.send('Serving HF');
 });
 
 export default app;  

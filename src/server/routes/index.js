@@ -5,4 +5,4 @@ const router = express();
 
 router.use('/gallery', galleryRoutes);
 
-export default router;
+export default router; 
