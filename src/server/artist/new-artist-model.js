@@ -2,7 +2,6 @@ const mongoose     = require('mongoose');
 const Schema       = require('mongoose').Schema;
 const artistSchema = Schema({
   name          : {type: String, required: true},
-  link          : {type: String, required: true},
   results       : Number,
   track         : {type: Boolean, required: true, default: false},
   read          : {type: Boolean, required: false, default: false},
@@ -11,8 +10,7 @@ const artistSchema = Schema({
   reasonToIgnore: {type: String},
   priority      : {type: Number, default: 1, required: true},
   observations  : {type: String},
-  galleries     : Array
-
+  galleries     : {type: Array, required: true}
 });
 
 artistSchema.statics.bulkInsert = function(models, fn) {
@@ -32,6 +30,6 @@ artistSchema.statics.bulkInsert = function(models, fn) {
   bulk.execute(fn);
 };
 
-const Artist = mongoose.model('Artist', artistSchema);
+const Artist = mongoose.model('Artist', artistSchema, 'newArtists');
 
 module.exports = Artist;

@@ -1,0 +1,5 @@
+require('babel-register')({
+  presets: ['env', 'stage-0']
+});
+
+require('../src/server/artist/database-ops/create-artist-collection-eachAsync');

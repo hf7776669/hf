@@ -1,4 +1,4 @@
-import apiRoutes from './routes/index';
+import apiRoutes from './routes';
 import express from 'express';
 
 const app = express();
@@ -9,4 +9,4 @@ app.get('/', (req, res) => {
   res.send('Serving HF');
 });
 
-export default app;  
+export default app;

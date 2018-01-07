@@ -70,6 +70,7 @@ class Details extends Component {
     }
   }
 
+
   render() {
     const {name, link, tags, pages} = this.props.gallery;
     //TODO: Create separate components for

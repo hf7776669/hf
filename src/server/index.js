@@ -4,8 +4,29 @@ import mongoose from 'mongoose';
 import fs from 'fs';
 import config from './config/index';
 
+require('dotenv-safe').load();
+
+let mongoLink;
+
+switch (process.env.DB) {
+  case 'local':
+    mongoLink = config.localMongo;
+    break;
+  case 'test':
+    mongoLink = config.testMongoConnection;
+    break;
+  case 'server':
+    mongoLink = config.mongoConnection;
+    break;
+  default:
+    mongoLink = config.localMongo;
+}
+
+console.log(`mongoLink`, mongoLink);
+
 mongoose.Promise = global.Promise;
-mongoose.connect(config.mongoConnection);
+mongoose.connect(mongoLink);
+
 const db = mongoose.connection;
 
 const options = {
@@ -14,7 +35,7 @@ const options = {
 };
 
 db.once('open', () => {
-  console.log(`\nMongodb connected`);
+  console.log(`\nConnected to ${mongoLink}`);
   spdy
       .createServer(options, app)
       .listen(config.port, (err) => {

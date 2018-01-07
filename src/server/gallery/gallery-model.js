@@ -1,3 +1,10 @@
+/*
+* Goal - Create Gallery Model 
+* 
+* CODE HIGHLIGHTS
+*   - bulkInsert
+*/
+
 const mongoose      = require('mongoose');
 const Schema        = require('mongoose').Schema;
 const gallerySchema = new Schema({
@@ -14,27 +21,11 @@ const gallerySchema = new Schema({
   imageLink   : {type: String, required: true},
   parodies    : Array,
   category    : Array,
-  rating      : Number, 
+  rating      : Number,
   series      : String,
   ignore      : Boolean,
   ignoreReason: String
 });
-
-gallerySchema.statics.bulkInsert = function(models, fn) {
-
-  if (!models || !models.length) return fn(null);
-
-  let bulk = this.collection.initializeOrderedBulkOp();
-  if (!bulk) return fn(
-      'bulkInsertModels: MongoDb connection is not yet established');
-
-  for (let i = 0; i < models.length; i++) {
-    bulk.insert(models[i]);
-  }
-
-  bulk.execute(fn);
-};
-
 
 const Gallery = mongoose.model('gallery', gallerySchema);
 

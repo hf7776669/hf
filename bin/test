@@ -2,4 +2,4 @@ require('babel-register')({
   presets: ['env', 'react', 'stage-0']
 });
 
-require('../src/server');
+require('../temp/test2');

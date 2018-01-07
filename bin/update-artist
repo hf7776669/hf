@@ -1,0 +1,8 @@
+console.log('\x1Bc');
+
+require('babel-register')({
+  presets: ['env', 'stage-0']
+});
+require('../src/server/utilities/artists/update-gallery-serial-nos');
+
+ 

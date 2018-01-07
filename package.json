@@ -14,10 +14,16 @@
     "babel-register"    : "^6.26.0"
   },
   "dependencies"   : {
-    "express" : "^4.16.2",
-    "fs"      : "0.0.1-security",
-    "mongoose": "^4.13.7",
-    "spdy"    : "^3.4.7"
+    "axios"               : "^0.17.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "bluebird"            : "^3.5.1",
+    "cheerio"             : "^1.0.0-rc.2",
+    "dotenv-safe"         : "^4.0.4",
+    "express"             : "^4.16.2",
+    "fs"                  : "0.0.1-security",
+    "moment"              : "^2.20.1",
+    "mongoose"            : "^4.13.7",
+    "spdy"                : "^3.4.7"
   },
   "nodemonConfig"  : {
     "ignore": [
@@ -27,4 +33,3 @@
     "delay" : "250"
   }
 }
- 

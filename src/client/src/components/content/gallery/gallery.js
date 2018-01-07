@@ -18,15 +18,17 @@ const Wrapper = styled.div`
 class Gallery extends Component {
   constructor(props) {
     super(props);
-    this.showDetails = this.showDetails.bind(this);
-    this.hideDetails = this.hideDetails.bind(this);
-    this.state       = {
+    this.showDetails    = this.showDetails.bind(this);
+    this.hideDetails    = this.hideDetails.bind(this);
+    this.getCoordinates = this.getCoordinates.bind(this);
+    this.state          = {
       isHovering : false,
       showDetails: false
     };
   }
 
   showDetails() {
+    this.getCoordinates();
     this.setState(() => ({isHovering: true}));
   }
 
@@ -34,19 +36,28 @@ class Gallery extends Component {
     this.setState(() => ({isHovering: false}));
   }
 
+  getCoordinates() {
+    console.log(`this.refs`, this.refs.targetDiv);
+    const node = this.refs.targetDiv;
+    var specs  = node.getBoundingClientRect();
+    console.log('specs: ', specs);
+    console.log('window: ', window.innerWidth + 'x' + window.innerHeight);
+  }
+
   render() {
     const {gallery} = this.props;
     return (
-        <Wrapper
-            onMouseEnter={this.showDetails}
-            onMouseLeave={this.hideDetails}>
-          <div>
+        <div ref='targetDiv'>
+          <Wrapper
+              onMouseEnter={this.showDetails}
+              onMouseLeave={this.hideDetails}>
+            <div>
 
-            <Figure gallery={gallery}/>
-            <Caption gallery={gallery}/>
-          </div>
-          {this.state.isHovering && <Details gallery={gallery}/>}
-        </Wrapper>
+              <Figure gallery={gallery}/>
+              <Caption gallery={gallery}/>
+            </div>
+            {this.state.isHovering && <Details gallery={gallery}/>}
+          </Wrapper></div>
     );
   }
 }
