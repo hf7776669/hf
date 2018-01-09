@@ -10,7 +10,6 @@ const Schema        = require('mongoose').Schema;
 const gallerySchema = new Schema({
   name        : {type: String, required: true},
   serialNo    : {type: String, required: true},
-  link        : {type: String, unique: true},
   tags        : {type: Array, required: true},
   priority    : {type: Number, default: 5},
   artists     : {type: Array},

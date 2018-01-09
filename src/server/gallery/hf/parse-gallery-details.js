@@ -4,43 +4,39 @@ import cheerio from 'cheerio';
 export default (page) => {
   const $ = cheerio.load(page);
 
-//   parse tags, artists, groups, pages, category
-
-  const artists     = $('span:contains(\'Artists: \')')
+  const name      = $('.bcenter')
+            .find('h1')
+            .html(),
+        parodies  = $('span:contains(\'Parodies: \')')
             .find('span')
             .get()
             .map(el => el.children[0].data),
-        group       = $('span:contains(\'Groups: \')')
+        tags      = $('span:contains(\'Tags: \')')
             .find('span')
             .get()
             .map(el => el.children[0].data),
-        imageLink   = $('.cover').find('img').attr('src').slice(2),
-
-        pages       = ~~$('span.pages').text().slice('Pages: '.length),
-        parodies    = $('span:contains(\'Parodies: \')')
+        artists   = $('span:contains(\'Artists: \')')
             .find('span')
             .get()
             .map(el => el.children[0].data),
-        rating      = ~~$('span:contains(\'Rating: \')')
+        groups    = $('span:contains(\'Groups: \')')
+            .find('span')
+            .get()
+            .map(el => el.children[0].data),
+        category  = $('span:contains(\'Category: \')')
+            .find('a')
+            .get()
+            .map(el => el.children[0].data),
+        pages     = ~~$('span.pages').text().slice('Pages: '.length),
+        rating    = ~~$('span:contains(\'Rating: \')')
             .find('span.average')
             .get()
             .map(el => ~~el.children[0].data.charAt(1))
             .join(''),
-        artistLinks = $('span:contains(\'Artists: \')')
-            .find('a')
-            .get()
-            .map(el => `https://hentaifox.com${el.attribs.href}`),
-        tags        = $('span:contains(\'Tags: \')')
-            .find('span')
-            .get()
-            .map(el => el.children[0].data),
-        category    = $('span:contains(\'Category: \')')
-            .find('a')
-            .get()
-            .map(el => el.children[0].data);
+        imageLink = $('.cover').find('img').attr('src').slice(2);
 
   return {
-    artists, group, imageLink, pages, parodies,
-    rating, artistLinks, tags, category
+    name, parodies, tags, artists, groups, category, pages,
+    rating, imageLink
   };
 }

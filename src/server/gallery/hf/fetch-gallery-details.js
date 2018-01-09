@@ -11,21 +11,36 @@ import parseGalleryDetails from './parse-gallery-details';
 const now = () => moment().format('hh:mm:ss');
 
 
-const getGallery = (galleryLink) =>
+const getGallery = (gallerySerialNo, delay = 5000) =>
     Promise
-        .delay(Math.random() * 10000)
+        .delay(Math.random() * delay)
         .then(() => console.log(
-            `${now()}: fetching gallery: ${galleryLink}`))
-        .then(_ => axios.get(galleryLink))
+            `${now()}: fetching gallery: ${gallerySerialNo}`))
+        .then(
+            _ => axios.get(`https://hentaifox.com/gallery/${gallerySerialNo}/`))
         .catch(error => {
-          console.log('Error in fetching gallery: ', galleryLink);
-          return getGallery(galleryLink);
+          console.log('Error in fetching gallery: ', gallerySerialNo);
+          if (delay > 1000 * 60 * 30) {
+            throw new Error(`Error in fetching gallery: ${gallerySerialNo}`,
+                error);
+          } else {
+            return getGallery(gallerySerialNo, delay * 2);
+          }
         });
 
 
-export default (galleryLink) =>
-    getGallery(galleryLink)
-        .catch(() => getGallery(galleryLink))
-        .then(result => result.data)
-        .then(parseGalleryDetails)
-      
+export default (gallerySerialNo) =>
+    getGallery(gallerySerialNo)
+
+        .then(({data}) => parseGalleryDetails(data))
+        .then(galleryDetails => ({
+          serialNo: gallerySerialNo,
+          ...galleryDetails
+        }))
+        .catch(err => {
+              //TODO: Ben Nadel rethrow JS error refactor
+              throw new Error(
+                  `Could not fetch gallery ${gallerySerialNo} after repeated tries`,
+                  err);
+            }
+        )
