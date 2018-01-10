@@ -11,7 +11,7 @@ import parseGalleryDetails from './parse-gallery-details';
 const now = () => moment().format('hh:mm:ss');
 
 
-const getGallery = (gallerySerialNo, delay = 5000) =>
+const getGallery = (gallerySerialNo, delay = 2000) =>
     Promise
         .delay(Math.random() * delay)
         .then(() => console.log(

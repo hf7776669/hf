@@ -13,7 +13,7 @@ import updateArtist from '../../artist/db-ops/artist-add-gallery';
 
 let lastFetchedGalleryDB;
 
-const updateNewGalleries = () => { 
+const updateNewGalleries = () => {
   console.log('Processing new galleries');
   return getLatestGalleryDB()
       .then(([{serialNo}]) => {lastFetchedGalleryDB = serialNo;})
@@ -59,7 +59,7 @@ const updateNewGalleries = () => {
             gallery => updateArtist(gallery));
 
         return Promise.all([
-          bulkInsertGalleries(completeGalleries),
+          bulkInsertGalleries(completeGalleries)
           promiseArtistUpdate
         ]);
       })

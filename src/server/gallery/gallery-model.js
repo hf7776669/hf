@@ -10,7 +10,7 @@ const Schema        = require('mongoose').Schema;
 const gallerySchema = new Schema({
   name        : {type: String, required: true},
   serialNo    : {type: String, required: true},
-  tags        : {type: Array, required: true},
+  tags        : {type: Array},
   priority    : {type: Number, default: 5},
   artists     : {type: Array},
   group       : {type: Array},
@@ -20,7 +20,7 @@ const gallerySchema = new Schema({
   imageLink   : {type: String, required: true},
   parodies    : Array,
   category    : Array,
-  rating      : Number,
+  rating      : Number, 
   series      : String,
   ignore      : Boolean,
   ignoreReason: String

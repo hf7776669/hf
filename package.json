@@ -28,7 +28,8 @@
   "nodemonConfig"  : {
     "ignore": [
       "src/client/*",
-      "docs/*"
+      "docs/*",
+      "**/*.json"
     ],
     "delay" : "250"
   }
