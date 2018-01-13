@@ -40,24 +40,25 @@ class Gallery extends Component {
     console.log(`this.refs`, this.refs.targetDiv);
     const node = this.refs.targetDiv;
     var specs  = node.getBoundingClientRect();
-    console.log('specs: ', specs);
-    console.log('window: ', window.innerWidth + 'x' + window.innerHeight);
+//    console.log('specs: ', specs);
+//    console.log('window: ', window.innerWidth + 'x' + window.innerHeight);
   }
 
   render() {
-    const {gallery} = this.props;
+    const {gallery, getArtistGalleries} = this.props;
     return (
-        <div ref='targetDiv'>
-          <Wrapper
-              onMouseEnter={this.showDetails}
-              onMouseLeave={this.hideDetails}>
-            <div>
 
-              <Figure gallery={gallery}/>
-              <Caption gallery={gallery}/>
-            </div>
-            {this.state.isHovering && <Details gallery={gallery}/>}
-          </Wrapper></div>
+        <Wrapper
+            onMouseEnter={this.showDetails}
+            onMouseLeave={this.hideDetails}>
+          <div ref='targetDiv'>
+
+            <Figure gallery={gallery}/>
+            <Caption gallery={gallery}/>
+          </div>
+          {this.state.isHovering &&
+          <Details gallery={gallery} getArtistGalleries={getArtistGalleries}/>}
+        </Wrapper>
     );
   }
 }

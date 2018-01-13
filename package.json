@@ -21,6 +21,7 @@
     "dotenv-safe"         : "^4.0.4",
     "express"             : "^4.16.2",
     "fs"                  : "0.0.1-security",
+    "he"                  : "^1.1.1",
     "moment"              : "^2.20.1",
     "mongoose"            : "^4.13.7",
     "spdy"                : "^3.4.7"

@@ -15,8 +15,6 @@ const Img = styled.img`
 `;
 
 const ItemCover = styled.div`
-  //height: 288px;
-  //overflow: hidden;
   box-shadow: 1px 3px 5px #131212;
   background: #1a1515;
   border-radius: 7px;
@@ -24,16 +22,16 @@ const ItemCover = styled.div`
 
 class GalleryFigure extends React.Component {
   render() {
-    const {link, imageLink} = this.props.gallery;
+    const {imageLink, serialNo, name} = this.props.gallery;
 
     return (
         <Figure>
           <ItemCover>
-            <a href={link}>
+            <a href={`https://hentaifox.com/gallery/${serialNo}/`}>
               <Img
-                  //                  src={'http://' + imageLink}
-                  src={'https://i.hentaifox.com/002/1139352/thumb.jpg'}
-                  alt={this.props.gallery.name}/>
+                  src={'http://' + imageLink}
+                  // src={'https://i.hentaifox.com/002/1139352/thumb.jpg'}
+                  alt={name}/>
             </a>
           </ItemCover>
         </Figure>

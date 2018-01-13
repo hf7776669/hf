@@ -3,41 +3,73 @@ import styled from 'styled-components';
 import Gallery from './gallery/gallery';
 import axios from 'axios';
 
-const Wrapper = styled.div`
+const ContentBody = styled.div`
   padding: 5px;
-  position:relative;
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  flex-grow: 1;
+  //flex-grow: 1;
   justify-content: space-between;
 `;
 
+const sortGalleries = galleries =>
+    galleries.sort((a, b) => (a.serialNo < b.serialNo) ? 1 : -1);
+
 class Content extends React.Component {
+  constructor(props) {
+    super(props);
+    this.getArtistGalleries = this.getArtistGalleries.bind(this);
+    this.filterGalleries    = this.filterGalleries.bind(this);
+    this.state              = {};
+  }
+
   componentWillMount() {
-    axios.get('/api/gallery')
-        .then(results => console.log(`results: `, results) ||
-            this.setState(() => ({galleries: results.data})))
+
+    return axios.get('/api/gallery')
+        .then(({data}) =>
+            this.setState(() => ({galleries: sortGalleries(data)})))
         .catch(err => console.log('err: ', err));
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {};
+  getArtistGalleries(name) {
+    return axios.get(`/api/artist/${name}`)
+        .then(axiosResult => {
+          console.log('results: ', axiosResult);
+          this.setState(() => ({galleries: sortGalleries(axiosResult.data)}));
+        });
+  }
+
+  filterGalleries(event) {
+    const {value} = event.target;
+    this.setState(() => ({nameFilter: value}));
   }
 
   render() {
-    const {galleries} = this.state;
+    const {galleries, nameFilter} = this.state;
     console.log(`this.state.galleries:- `, galleries);
     return (
-        <Wrapper>
-          {galleries ? galleries.map(
-              gallery => <Gallery key={gallery} gallery={gallery}></Gallery>
-          ) : 'Loading'
-          }
+        <div>
+          <input onChange={(e) => this.filterGalleries(e)}/>
 
-        </Wrapper>
+          <ContentBody>
+            {galleries ? galleries.filter(
+                (gallery) => {
+                  if (!nameFilter) {return 1;}
+                  return gallery.name.toLowerCase()
+                      .includes(nameFilter.toLowerCase());
+                })
+                .map(
+                    gallery => <Gallery key={gallery.serialNo}
+                                        gallery={gallery}
+                                        getArtistGalleries={this.getArtistGalleries}>
+
+                    </Gallery>
+                ) : 'Loading'
+            }
+          </ContentBody>
+        </div> 
     );
-  };
+  }
 }
 
 export default Content;

@@ -1,8 +1,5 @@
 /*
 * Goal - Create Gallery Model 
-* 
-* CODE HIGHLIGHTS
-*   - bulkInsert
 */
 
 const mongoose      = require('mongoose');
@@ -20,9 +17,9 @@ const gallerySchema = new Schema({
   imageLink   : {type: String, required: true},
   parodies    : Array,
   category    : Array,
-  rating      : Number, 
+  rating      : Number,
   series      : String,
-  ignore      : Boolean,
+  ignore      : {type: Boolean, default: false},
   ignoreReason: String
 });
 

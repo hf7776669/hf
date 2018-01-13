@@ -1,6 +1,17 @@
 /*
 * Goal - fetch new galleries from hf, update artist collections and return
 * latest galleries to client
+* 
+* NOTABLE FEATURES
+*   - axios request headers
+*   - bluebird Promise.mapSeries for sequential execution of promises 
+*     - mapSeries takes an array which is mapped to a promise returning
+ *     function which is to be executed sequentially over each value
+*  
+*  REFACTOR NEEDED
+*   - processHFPage should return only a serial number of latest hf gallery
+*     - no need for destructuring to get serial number of first array object 
+*     - rename processHFPage suitably
 */
 
 import axios from 'axios';
@@ -10,6 +21,7 @@ import getLatestGalleryDB from '../db-ops/get-latest-gallery';
 import fetchGalleryDetails from './fetch-gallery-details';
 import bulkInsertGalleries from '../db-ops/bulk-insert-galleries';
 import updateArtist from '../../artist/db-ops/artist-add-gallery';
+import config from '../../config';
 
 let lastFetchedGalleryDB;
 
@@ -17,19 +29,11 @@ const updateNewGalleries = () => {
   console.log('Processing new galleries');
   return getLatestGalleryDB()
       .then(([{serialNo}]) => {lastFetchedGalleryDB = serialNo;})
-      .then(_ => axios
-          .get(`https://hentaifox.com/`, {
-            Connection                 : 'keep-alive',
-            'Upgrade-Insecure-Requests': 1,
-            'User-Agent'               : 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
-            Accept                     : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            DNT                        : 1,
-            'Accept-Encoding'          : 'gzip, deflate, sdch, br',
-            'Accept-Language'          : 'en-US,en;q=0.8'
-          }))
+      .then(_ => axios.get(config.hfAddress, config.requestHeaders))
       .then(page => processHFPage(page))
-      .then(galleries => {
-        const latestGallery = galleries[0].serialNo;
+      //      Latest Gallery is first Array object's serial Number
+      .then(([{serialNo: latestGallery}]) => {
+        // const latestGallery = galleries[0].serialNo;
         console.log(
             `Fetching Galleries ${lastFetchedGalleryDB} - ${latestGallery}`);
 
@@ -53,17 +57,18 @@ const updateNewGalleries = () => {
           )
       )
       .catch(err => console.log(`Error in fetching gallery details`, err))
-      .then(completeGalleries => {
-
-        const promiseArtistUpdate = Promise.mapSeries(completeGalleries,
-            gallery => updateArtist(gallery));
-
-        return Promise.all([
-          bulkInsertGalleries(completeGalleries)
-          promiseArtistUpdate
-        ]);
-      })
+      .then(updateDatabase)
       .catch(err => console.error('err: ', err));
 };
 
 export default updateNewGalleries;
+
+function updateDatabase(completeGalleries) {
+  const promiseArtistUpdate = Promise.mapSeries(completeGalleries,
+      gallery => updateArtist(gallery));
+
+  return Promise.all([
+    bulkInsertGalleries(completeGalleries),
+    promiseArtistUpdate
+  ]);
+}

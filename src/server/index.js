@@ -1,3 +1,17 @@
+/*
+* Goal:
+*   - Connect to Mongo before loading app.
+*   - Use HTTP2 
+*   - Ensure Environment variables
+*   
+* NOTABLE FEATURES
+*   - Spdy for HTTP2
+*   - dotenv-safe 
+*     - document required env variables in '.env.example'
+*   - mongo db connection listeners 
+*   - Sync read of server certificates needed for spdy
+*/
+
 import app from './app';
 import spdy from 'spdy';
 import mongoose from 'mongoose';
@@ -50,8 +64,3 @@ db.once('open', () => {
 db.on('error', (err) => {
   console.error(`\n\nError in connecting to the mongo server: \n\n`, err);
 });
-
-
-/*
-* Random comment from tosh
-*/

@@ -1,3 +1,12 @@
+/*
+* Goal 
+*   a. Create model for artist
+*   
+* NOTABLE FEATURES
+*   1. Mongoose Schema and field definitions
+*   2. Collection named defined (not plurified named as per Mongoose defaults)
+*/
+
 const mongoose     = require('mongoose');
 const Schema       = require('mongoose').Schema;
 const artistSchema = Schema({
@@ -27,24 +36,8 @@ const artistSchema = Schema({
   galleries     : {type: Array, required: true}
 });
 
-artistSchema.statics.bulkInsert = function(models, fn) {
-  if (!models || !models.length)
-    return fn(null);
 
-  var bulk = this.collection.initializeOrderedBulkOp();
-  if (!bulk)
-    return fn('bulkInsertModels: MongoDb connection is not yet established');
-
-  var model;
-  for (var i = 0; i < models.length; i++) {
-    model = models[i];
-    bulk.insert(model);
-  }
-
-  bulk.execute(fn);
-};
-
-const Artist = mongoose.model('Artist', artistSchema);
+const Artist = mongoose.model('Artist', artistSchema, 'artists');
 
 module.exports = Artist;
 

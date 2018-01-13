@@ -1,3 +1,14 @@
+/*
+* Goal
+*   a. To bulk insert galleries fetched from hf
+*   
+* NOTABLE FEATURES
+*   1. Mongoose insertMany
+*     - Creates schema compliant documents
+*     - Type casting is implicity (ex. '04455' into 4455) no errors returned
+*     - Returns first error 
+*/
+
 import Gallery from '../gallery-model';
 
 export default (galleries) => {

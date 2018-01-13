@@ -18,41 +18,16 @@ import updateArtist from './artist-add-gallery';
 import Gallery from '../../gallery/gallery-model';
 import moment from 'moment';
 
-/*
-mongoose.connect('localhost/hf-test');
-
-const db = mongoose.connection;
-
-console.log(`Connecting to Mongodb`);
-
-db.once('open', () => {
-  console.log(`Connected to Mongodb`);
-  const cursor = Gallery.find().sort({serialNo: 1}).cursor();
-  cursor.eachAsync(gallery => {
-    console.log(gallery.serialNo);
-    return updateArtist(gallery);
-  }).then(() => {
-    console.log(`startTime: `, moment(startTime).format(' h:mm:s'));
-    console.log(`endTime: `, moment().format(' h:mm:s'));
-  }); 
-});
-
-db.on('error', err => {
-  console.log(`Error connecting to Mongodb`, err);
-});
- 
-*/
+const now = moment().format(' h:mm:s');
 
 export default () => {
-  console.log(moment(startTime).format(' h:mm:s') + ': creating artist' +
-      ' collection');
+  console.log(now + ': creating artist collection');
   const cursor = Gallery.find().sort({serialNo: 1}).cursor();
-  return cursor.eachAsync(gallery => {
-    console.log(gallery.serialNo);
-    return updateArtist(gallery);
-  }).then(() => {
-    console.log(`${moment(startTime)
-        .format('h:mm:ss')}: Started creating new artist collection`);
-    console.log(moment().format('h:mm:ss') + ': Created artist collection');
-  });
+  return cursor
+      .eachAsync(gallery => updateArtist(gallery))
+      .then(() => {
+        console.log(`${moment(startTime)
+            .format('h:mm:ss')}: Started creating new artist collection`);
+        console.log(now + ': Created artist collection');
+      });
 }

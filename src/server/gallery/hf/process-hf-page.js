@@ -1,19 +1,18 @@
-import cheerio from 'cheerio';
-
-
-//import galleries from '../routes/gallery-routes';
-
 /*
-* 1. Latest gallery serialNo, imageLink
-* 2. Last Page
-* 3. Last Gallery on Page serialNo, imageLink
-* 4. List of galleries
-* */
-
-/*
-* Input: ???
-* Output: ???
+* Goal: 
+*   a. Get galleries from landing page of hf
+*   
+* Input
+*   - Landing page fetched by axios
+* Output
+*   - Array of galleries on landing page.
+*   
+* Refactor Needed
+*  - Return only latest gallery number instead of array of galleries as they
+ *  are no longer needed
 */
+
+import cheerio from 'cheerio';
 
 export default (response) => {
   const $          = cheerio.load(response.data);

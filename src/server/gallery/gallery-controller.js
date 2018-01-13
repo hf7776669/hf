@@ -1,12 +1,18 @@
+/*
+* Goal 
+*   a. Create controllers for Gallery routes
+*   
+*/
+
 import fetchNewGalleries from './hf/update-new-galleries';
 import getLatestDBGallery from './db-ops/get-latest-gallery';
-import gallery from './gallery-model';
+import Gallery from './gallery-model';
 
 const galleryBySerialNo = (req, res) => {
 
   const {serialNo} = req.params;
 
-  gallery
+  return Gallery
       .find({serialNo})
       .then((results) => {
         console.log(`results: `, results);
@@ -18,10 +24,24 @@ const galleryBySerialNo = (req, res) => {
       });
 };
 
+const ignoreGallery = (req, res) => {
+  const {serialNo} = req.params;
+  console.log(`Ignore gallery ${serialNo}`);
+
+  return Gallery
+      .update({serialNo}, {$set: {ignore: true}})
+      .then(_ => res.send('Ignore update successful'))
+      .catch(_ => {
+        console.log('error in ignoring gallery: ', _);
+        res.send('Ignore update failed');
+      });
+};
+
 const getAll = (req, res) => {
-  gallery
-      .find({})
-      .limit(10)
+  return Gallery
+      .find({ignore: {$ne: true}})
+      .sort({serialNo: -1})
+      .limit(40)
       .then((results) => res.send(results))
       .catch(err => {
         console.log(`Error while fetching galleries from mongodb\n`, err);
@@ -31,13 +51,13 @@ const getAll = (req, res) => {
 
 const getLatest = (req, res) => {
   console.log(`latest`);
-  getLatestDBGallery()
+  return getLatestDBGallery()
       .then(result => res.json(result[0].serialNo));
 };
 
 const changePriority = (req, res) => {
   let {serialNo} = req.params;
-  gallery
+  return Gallery
       .findOne({serialNo})
       .then(result => console.log(`read: `, result.read) || !result.read)
       .then((newRead) => {
@@ -49,11 +69,11 @@ const changePriority = (req, res) => {
 
 const changeDownloadStatus = (req, res) => {
   let {serialNo} = req.params;
-  gallery
+  return Gallery
       .findOne({serialNo})
       .then(result => console.log(`read: `, result.read) || !result.downloaded)
       .then((newDownloadedStatus) => {
-        gallery
+        return Gallery
             .findOneAndUpdate({serialNo},
                 {$set: {downloaded: newDownloadedStatus}}, {new: true})
             .then((result) => res.send(result));
@@ -75,7 +95,7 @@ const updateDb = (req, res) => {
   //TODO: send updated data back to client 
   //TODO: Client's axios library will use received data to update state
 
-  fetchNewGalleries()
+  return fetchNewGalleries()
       .then((data) => {
 //        console.log('data in updateNewGalleries: ', data);
         res.send(data);
@@ -88,16 +108,18 @@ const updatePriority = (req, res) => {
 
   newPriority = newPriority * 1;
 
-  gallery
-      .findOneAndUpdate({serialNo}, {$set: {priority: newPriority}},
-          {new: true})
-      .then(
-          result => res.send(result));
+  return Gallery
+      .findOneAndUpdate(
+          {serialNo},
+          {$set: {priority: newPriority}},
+          {new: true}
+      )
+      .then(result => res.send(result));
 };
 
 export default {
   download, ignore, updateDb, updatePriority,
   galleryBySerialNo, getAll, getLatest,
-  changePriority, changeDownloadStatus
+  changePriority, changeDownloadStatus, ignoreGallery
 };
   

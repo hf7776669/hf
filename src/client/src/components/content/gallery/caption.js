@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import he from 'he';
 
 const DivStatus = styled.div`
   position: absolute;
@@ -34,7 +35,7 @@ class GalleryCaption extends React.Component {
         <div className="caption">
           <h3>
             <A href={gallery.link}>
-              {gallery.name}
+              {he.decode(gallery.name)}
             </A>
           </h3>
           <div>
