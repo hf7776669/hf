@@ -30,5 +30,7 @@ yarn-error.log*
 
 #temp folder
 temp/
+galleries.json
+mock
 
 test.cmd

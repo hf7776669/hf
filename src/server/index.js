@@ -49,7 +49,7 @@ const options = {
 };
 
 db.once('open', () => {
-  console.log(`\nConnected to ${mongoLink}`);
+  console.log(`\nConnected to ${mongoLink}`); 
   spdy
       .createServer(options, app)
       .listen(config.port, (err) => {
@@ -58,6 +58,9 @@ db.once('open', () => {
           return process.exit(1);
         }
         console.log(`\nListening on port ${config.port}`);
+      })
+      .listen(6001, '0.0.0.0', (err) => {
+        console.log('listening on local network');
       });
 });
 
