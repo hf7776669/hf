@@ -8,39 +8,45 @@ export default class Example extends React.Component {
 
   render() {
     const {activePage, fetchPage} = this.props;
-    console.log('page: ', activePage);
+
+    let pageArray = [];
+
+    if (activePage <= 3) {
+      for (let i = 1; i < 7; i++) {
+        pageArray.push(i);
+      }
+    } else {
+      for (let i = activePage - 2; i < activePage + 4; i++) {
+        pageArray.push(i);
+      }
+    }
+
     return (
         <Pagination>
+          <PaginationItem disabled={activePage == 1}
+                          onClick={() => fetchPage(1)}>
+            <PaginationLink>
+              First
+            </PaginationLink>
+          </PaginationItem>
+
           <PaginationItem disabled={activePage == 1}>
             <PaginationLink previous onClick={() => fetchPage(activePage - 1)}/>
           </PaginationItem>
-          <PaginationItem active={activePage == 1}>
-            <PaginationLink onClick={() => fetchPage(1)}>
-              1
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem active={activePage == 2}>
-            <PaginationLink onClick={() => fetchPage(2)}>
-              2
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem active={activePage == 3}>
-            <PaginationLink onClick={() => fetchPage(3)}>
-              3
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem active={activePage == 4}>
-            <PaginationLink onClick={() => fetchPage(4)}>
-              4
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem active={activePage == 5}>
-            <PaginationLink onClick={() => fetchPage(5)}>
-              5
-            </PaginationLink>
-          </PaginationItem>
+
+          {pageArray.map((i) => (
+              <PaginationItem active={activePage === i}>
+                <PaginationLink
+                    onClick={() => fetchPage(i)}>{i}</PaginationLink>
+              </PaginationItem>
+          ))}
+
           <PaginationItem>
             <PaginationLink next onClick={() => fetchPage(activePage + 1)}/>
+          </PaginationItem>
+
+          <PaginationItem disabled={activePage == 1}>
+            <PaginationLink>Last</PaginationLink>
           </PaginationItem>
         </Pagination>
     );

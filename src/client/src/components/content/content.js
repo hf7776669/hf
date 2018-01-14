@@ -78,7 +78,7 @@ class Content extends React.Component {
 
   render() {
     const {galleries, nameFilter, page} = this.state;
-    console.log(`this.state.galleries:- `, galleries);
+
     return (
         <div>
           <Search>
