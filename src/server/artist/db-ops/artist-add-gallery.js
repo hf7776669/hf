@@ -26,7 +26,8 @@ function updateArtist(gallery) {
           console.log('Updating artist: ', artist);
           return Artist.update({name: artist}, {
             name     : artist,
-            $addToSet: {galleries: gallery.serialNo}
+            $addToSet: {galleries: gallery.serialNo},
+            sorted   : false
           }, {new: true, upsert: true, setDefaultsOnInsert: true});
         });
     return Promise.all(artistPromiseArray);

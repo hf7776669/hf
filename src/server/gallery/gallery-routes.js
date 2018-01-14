@@ -15,6 +15,9 @@ const Router = express();
 Router.get('/serialNo/:serialNo', galleryController.galleryBySerialNo);
 
 Router.get('/', galleryController.getGalleries);
+
+Router.get('/update', galleryController.updateDb);
+
 Router.get('/:page', galleryController.getGalleries);
 
 Router.get('/latest', galleryController.getLatest);
@@ -31,9 +34,6 @@ Router.post('/download-status/:serialNo',
 
 Router.get('/download/:serialNo', galleryController.download);
 
-Router.post('/ignore/:serialNo', galleryController.ignore);
-
-Router.get('/update', galleryController.updateDb);
 
 
 export default Router;

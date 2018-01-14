@@ -38,12 +38,12 @@ const ignoreGallery = (req, res) => {
 };
 
 const getGalleries = (req, res) => {
-  const {page = 1} = req.params;  
+  const {page = 1} = req.params;
   return Gallery
       .find({ignore: {$ne: true}})
       .sort({serialNo: -1})
       .skip((page - 1) * 40)
-      .limit(40) 
+      .limit(40)
       .then((results) => res.send(results))
       .catch(err => {
         console.log(`Error while fetching galleries from mongodb\n`, err);
@@ -66,7 +66,7 @@ const changePriority = (req, res) => {
         gallery
             .findOneAndUpdate({serialNo}, {$set: {read: newRead}}, {new: true})
             .then((result) => res.send(result));
-      }); 
+      });
 };
 
 const changeDownloadStatus = (req, res) => {
@@ -85,11 +85,6 @@ const changeDownloadStatus = (req, res) => {
 const download = (req, res) => {
   let {serialNo} = req.params;
   //TODO: Download logic for the gallery  
-};
-
-const ignore = (req, res) => {
-  let {serialNo} = req.params;
-  //TODO: Get form data for ignore & ignore reason and update here
 };
 
 const updateDb = (req, res) => {
@@ -120,7 +115,7 @@ const updatePriority = (req, res) => {
 };
 
 export default {
-  download, ignore, updateDb, updatePriority,
+  download, updateDb, updatePriority,
   galleryBySerialNo, getGalleries, getLatest,
   changePriority, changeDownloadStatus, ignoreGallery
 };
