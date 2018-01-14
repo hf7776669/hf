@@ -14,7 +14,8 @@ const Router = express();
 
 Router.get('/serialNo/:serialNo', galleryController.galleryBySerialNo);
 
-Router.get('/', galleryController.getAll);
+Router.get('/', galleryController.getGalleries);
+Router.get('/:page', galleryController.getGalleries);
 
 Router.get('/latest', galleryController.getLatest);
 

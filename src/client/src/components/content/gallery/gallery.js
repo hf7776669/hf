@@ -1,3 +1,8 @@
+/* 
+* NOTABLE FEATURES - 
+*   - Better CSS Specificity in styled-components by wrapping all CSS Rules inside &&& {}
+*/
+
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import Figure from './figure';
@@ -5,14 +10,14 @@ import Caption from './caption';
 import Details from './details';
 
 const Wrapper = styled.div`
-  text-align: left;
-  width:18%;
+  &&& {text-align: left;
+  width:17%;
   min-width: 200px;
   margin: 15px 7px;
   padding: 0;
   position: relative;
   vertical-align: top;
-  display: inline-block;
+  display: inline-block;}
 `;
 
 class Gallery extends Component {

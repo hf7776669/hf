@@ -37,10 +37,12 @@ const ignoreGallery = (req, res) => {
       });
 };
 
-const getAll = (req, res) => {
+const getGalleries = (req, res) => {
+  const {page = 1} = req.params;
   return Gallery
       .find({ignore: {$ne: true}})
       .sort({serialNo: -1})
+      .skip((page - 1) * 40)
       .limit(40)
       .then((results) => res.send(results))
       .catch(err => {
@@ -119,7 +121,7 @@ const updatePriority = (req, res) => {
 
 export default {
   download, ignore, updateDb, updatePriority,
-  galleryBySerialNo, getAll, getLatest,
+  galleryBySerialNo, getGalleries, getLatest,
   changePriority, changeDownloadStatus, ignoreGallery
 };
   

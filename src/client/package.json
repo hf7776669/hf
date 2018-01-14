@@ -4,12 +4,14 @@
   "private"     : true,
   "dependencies": {
     "axios"                             : "^0.17.1",
+    "bootstrap"                         : "^4.0.0-beta.3",
     "react"                             : "^16.2.0",
     "react-app-rewire-styled-components": "^3.0.0",
     "react-app-rewired"                 : "^1.4.0",
     "react-dom"                         : "^16.2.0",
     "react-icons"                       : "^2.2.7",
     "react-scripts"                     : "1.0.17",
+    "reactstrap"                        : "^5.0.0-alpha.4",
     "styled-components"                 : "^2.3.0"
   },
   "scripts"     : {
