@@ -32,6 +32,9 @@ switch (process.env.DB) {
   case 'server':
     mongoLink = config.mongoConnection;
     break;
+  case 'prod':
+    mongoLink = config.prodMongo;
+    break;
   default:
     mongoLink = config.localMongo;
 }
@@ -49,7 +52,7 @@ const options = {
 };
 
 db.once('open', () => {
-  console.log(`\nConnected to ${mongoLink}`); 
+  console.log(`\nConnected to ${mongoLink}`);
   spdy
       .createServer(options, app)
       .listen(config.port, (err) => {
@@ -59,9 +62,9 @@ db.once('open', () => {
         }
         console.log(`\nListening on port ${config.port}`);
       })
-      .listen(6001, '0.0.0.0', (err) => {
-        console.log('listening on local network');
-      });
+  /*.listen(6001, '0.0.0.0', (err) => {
+    console.log('listening on local network');
+  });*/
 });
 
 db.on('error', (err) => {

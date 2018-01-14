@@ -4,6 +4,7 @@ export default {
   port               : /*process.env.PORT || */3001,
   hfAddress          : 'https://hentaifox.com',
   localMongo         : 'mongodb://localhost:27017/hf-test',
+  prodMongo          : 'mongodb://localhost:27017/hf',
   requestHeaders     : {
     Connection                 : 'keep-alive',
     'Upgrade-Insecure-Requests': 1,
