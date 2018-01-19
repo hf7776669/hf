@@ -17,13 +17,11 @@ Router.route('/:serialNo')
     .get(galleryController.fetchGallery)
     .post(galleryController.updateGallery);
 
-Router.get('/:page', galleryController.getGalleries);
+Router.get('/', galleryController.getGalleries);
 
 Router.get('/latest', galleryController.getLatest);
 
 Router.get('/download/:serialNo', galleryController.download);
-
-/*Router.post('/ignore/:serialNo', galleryController.ignore);*/
 
 Router.get('/update', galleryController.updateDb);
 

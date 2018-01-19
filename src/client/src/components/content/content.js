@@ -4,7 +4,7 @@
 *   - Fixed Filter input box 
 */
 
-import React, {Component} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Gallery from './gallery/gallery';
 import axios from 'axios';
@@ -53,7 +53,8 @@ class Content extends React.Component {
   }
 
   getArtistGalleries(name) {
-    return axios.get(`/api/artist/${name}`)
+    return axios
+        .get(`/api/artist/${name}`)
         .then(axiosResult => {
           console.log('results: ', axiosResult);
           this.setState(() => ({galleries: sortGalleries(axiosResult.data)}));

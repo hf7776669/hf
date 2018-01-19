@@ -7,6 +7,9 @@
 import fetchNewGalleries from './hf/update-new-galleries';
 import getLatestDBGallery from './db-ops/get-latest-gallery';
 import Gallery from './gallery-model';
+import config from '../config/';
+
+const {pageSize} = config.pagination;
 
 const fetchGallery = (req, res) => {
 
@@ -63,14 +66,12 @@ const updateGallery = (req, res) => {
 };
 
 const getGalleries = (req, res) => {
-  //TODO: use req.query instead of req.params to get pagination info
-
-  const {page = 1} = req.params;
+  const {page = 1} = req.query;
   return Gallery
       .find({ignore: {$ne: true}})
       .sort({serialNo: -1})
-      .skip((page - 1) * 40)
-      .limit(40)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
       .then((results) => res.send(results))
       .catch(err => {
         console.log(`Error while fetching galleries from mongodb\n`, err);
