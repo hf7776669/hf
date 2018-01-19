@@ -12,4 +12,4 @@ app.get('/', (req, res) => {
   res.send('Use /gallery or /artists');
 });
 
-export default router; 
+export default app; 
