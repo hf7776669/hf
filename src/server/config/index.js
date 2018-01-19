@@ -13,5 +13,8 @@ export default {
     DNT                        : 1,
     'Accept-Encoding'          : 'gzip, deflate, sdch, br',
     'Accept-Language'          : 'en-US,en;q=0.8'
+  },
+  pagination    : {
+    pageSize: 25
   }
 };        

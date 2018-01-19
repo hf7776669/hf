@@ -10,11 +10,10 @@
 import express from 'express';
 import artistController from './artist-controller';
 
-const Router = express();
+const Router = express.Router();
 
-Router.get('/:name', artistController.getArtist);
-
-
-Router.get('/create', artistController.create);
+Router.route('/:artistName')
+    .get(artistController.fetchArtist)
+    .post(artistController.updateArtist);
 
 export default Router;  

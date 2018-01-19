@@ -4,7 +4,7 @@
 *   - Fixed Filter input box 
 */
 
-import React, {Component} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Gallery from './gallery/gallery';
 import axios from 'axios';
@@ -33,8 +33,34 @@ const Search = styled.div`
   }
 `;
 
-const sortGalleries = galleries =>
-    galleries.sort((a, b) => (a.serialNo < b.serialNo) ? 1 : -1);
+const sortGalleries = (
+    galleries, sortParameter = 'serialNo', sortDirection = 'desc') => {
+  let comparator;
+  switch (sortDirection) {
+    case 'asc':
+      comparator = -1;
+      break;
+    case 'desc':
+      comparator = 1;
+      break;
+    case 'default':
+      return new Error('Incorrect Sort Parameter');
+  }
+  return galleries.sort(
+      (a, b) => {
+        let item1, item2;
+        if (typeof a[sortParameter] === 'string') {
+          item1 = a[sortParameter].toLowerCase();
+          item2 = b[sortParameter].toLowerCase();
+        }
+        else {
+          item1 = a[sortParameter];
+          item2 = b[sortParameter];
+        }
+        return (item1 < item2) ? comparator : -1 * comparator;
+      }
+  );
+};
 
 class Content extends React.Component {
   constructor(props) {
@@ -46,17 +72,38 @@ class Content extends React.Component {
   }
 
   componentWillMount() {
-    return axios.get('/api/gallery')
+    return axios.get('/api/galleries')
         .then(({data}) =>
             this.setState(() => ({galleries: sortGalleries(data)})))
         .catch(err => console.log('err: ', err));
   }
 
-  getArtistGalleries(name) {
-    return axios.get(`/api/artist/${name}`)
-        .then(axiosResult => {
-          console.log('results: ', axiosResult);
-          this.setState(() => ({galleries: sortGalleries(axiosResult.data)}));
+  getArtistGalleries(artistName) {
+    return axios
+        .get(`/api/artists/${artistName}`)
+        .then((axiosResult) => {
+          const {data} = axiosResult;
+          console.log(axiosResult);
+          this.setState(() => ({
+            galleries : data.length ? sortGalleries(data) : [],
+            artistView: true,
+            artistName
+          }));
+        });
+  }
+
+  sortGalleries(parameter, sortDirection = 1) {
+    const sortedGalleries = sortGalleries(this.state.galleries, parameter,
+        sortDirection);
+    this.setState({
+      galleries: sortedGalleries
+    });
+  }
+
+  ignoreArtist(name) {
+    return axios.post(`/api/artists/${name}`, {ignore: true})
+        .then(() => {
+          console.log(`Ignored artist: ${name}`);
         });
   }
 
@@ -66,24 +113,44 @@ class Content extends React.Component {
   }
 
   getPage(page) {
-    return axios.get(`/api/gallery/${page}`)
+    return axios.get(`/api/galleries?page=${page}`)
         .then(axiosResult => {
           this.setState(() => ({
-            galleries: sortGalleries(axiosResult.data),
-            page     : page
+            galleries : sortGalleries(axiosResult.data),
+            page      : page,
+            artistView: false
           }));
         });
   }
 
+  artistClean(name) {
+    return axios.post(`/api/artists/${name}`, {cleaned: true})
+        .then(() => {
+          console.log(`Updated artist ${name} as sorted`);
+        });
+  }
 
   render() {
-    const {galleries, nameFilter, page} = this.state;
-
+    const {galleries, nameFilter, page, artistView, artistName} = this.state;
+    console.log(`this.state.galleries:- `, galleries);
     return (
         <div>
           <Search>
             <input onChange={(e) => this.filterGalleries(e)}
                    style={{width: '35%', height: '40px'}}/>
+            <button onClick={() => this.sortGalleries('name',
+                'asc')}>By Name
+            </button>
+            <button onClick={() => this.sortGalleries('pages',
+                'desc')}>By Pages
+            </button>
+
+            {artistView &&
+            <button onClick={() => this.ignoreArtist(artistName)}>Ignore
+              Artist</button>}
+            {artistView &&
+            <button onClick={() => this.artistClean(artistName)}>Artist
+              Clean</button>}
           </Search>
           <ContentBody>
             {galleries ? galleries.filter(
