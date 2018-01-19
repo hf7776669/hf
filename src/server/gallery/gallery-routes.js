@@ -10,20 +10,28 @@ import express from 'express';
 
 import galleryController from './gallery-controller';
 
-//const Router = express();
 const Router = express.Router();
 
-Router.route('/:serialNo')
+Router
+    .route('/update')
+    .get(galleryController.updateDb);
+
+Router
+    .route('/latest')
+    .get(galleryController.getLatest);
+
+Router
+    .route('/download/:serialNo')
+    .get(galleryController.download);
+
+Router
+    .route('/:serialNo')
     .get(galleryController.fetchGallery)
     .post(galleryController.updateGallery);
 
-Router.get('/', galleryController.fetchGalleries);
-
-Router.get('/latest', galleryController.getLatest);
-
-Router.get('/download/:serialNo', galleryController.download);
-
-Router.get('/update', galleryController.updateDb);
+Router
+    .route('/')
+    .get(galleryController.fetchGalleries);
 
 export default Router; 
  
