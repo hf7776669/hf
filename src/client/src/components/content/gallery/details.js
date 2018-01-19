@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const badTags = [
   'Shotacon', 'Lolicon', 'Guro', 'Snuff',
-  'Bestiality', 'Dog', '', '', '', '', ''
+  'Bestiality', 'Dog', 'Tentacles', '', '', '', ''
 ];
 
 const Wrapper = styled.div`
@@ -97,7 +97,7 @@ class Details extends Component {
 
   ignoreGallery(serialNo) {
     console.log('Ignore: ', serialNo);
-    return axios.post(`/api/gallery/ignore/${serialNo}`)
+    return axios.post(`/api/gallery/${serialNo}`, {ignore: true})
         .then(({data: msg}) => {
           if (msg === 'Ignore update successful') {
             console.log(`Gallery ${serialNo} Ignored`);
