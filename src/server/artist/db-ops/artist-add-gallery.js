@@ -22,11 +22,13 @@ function updateArtist(gallery) {
   if (gallery.artists.length) {
     const artistPromiseArray = gallery.artists.map(
         artist => {
+          //some galleries contain artist details in object form
           artist = (typeof artist === 'object') ? artist.name : artist;
           console.log('Updating artist: ', artist);
           return Artist.update({name: artist}, {
-            name     : artist,
-            $addToSet: {galleries: gallery.serialNo}
+            $addToSet: {galleries: gallery.serialNo},
+            //New Gallery might be duplicate or unwanted
+            $set     : {cleaned: false}
           }, {new: true, upsert: true, setDefaultsOnInsert: true});
         });
     return Promise.all(artistPromiseArray);

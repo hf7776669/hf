@@ -49,7 +49,7 @@ const updateGallery = (req, res) => {
     result = Gallery.update({serialNo},
         {$set: updateObject, $addToSet: pushObject});
   } else {
-    if (Object.keys(pushObject).length()) {
+    if (Object.keys(pushObject).length) {
       result = Gallery.update({serialNo}, {$addToSet: pushObject});
 
     } else if (Object.keys(updateObject).length) {
@@ -65,7 +65,8 @@ const updateGallery = (req, res) => {
       });
 };
 
-const getGalleries = (req, res) => {
+const fetchGalleries = (req, res) => {
+  console.log(`Getting galleries`);
   const {page = 1} = req.query;
   return Gallery
       .find({ignore: {$ne: true}})
@@ -104,6 +105,6 @@ const updateDb = (req, res) => {
 };
 
 export default {
-  download, updateDb, fetchGallery, getGalleries, getLatest, updateGallery
+  download, updateDb, fetchGallery, fetchGalleries, getLatest, updateGallery
 };
   

@@ -17,7 +17,7 @@ Router.route('/:serialNo')
     .get(galleryController.fetchGallery)
     .post(galleryController.updateGallery);
 
-Router.get('/', galleryController.getGalleries);
+Router.get('/', galleryController.fetchGalleries);
 
 Router.get('/latest', galleryController.getLatest);
 

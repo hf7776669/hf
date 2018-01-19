@@ -8,29 +8,21 @@
 
 import Gallery from '../gallery/gallery-model';
 import Artist from '../artist/artist-model';
-import createArtist from './db-ops/create-artist-collection-eachAsync';
 
-const create = (req, res) => createArtist().then(() => {
-  res.send('created artist collection');
-});
-
-
-const getArtist = (req, res) => {
-  const {name} = req.params;
-  console.log(`name: `, name);
+const fetchArtist = (req, res) => {
+  const {artistName} = req.params;
+  console.log(`artistName: `, artistName);
   return Artist
-      .findOne({name})
-
+      .findOne({name: artistName})
       .then(({galleries}) => {
-
         const galleryPromises = galleries.map(
-            serialNo => Gallery.findOne({serialNo, ignore: {$ne: true}}));
+            serialNo => Gallery.findOne({serialNo}));
+
         return Promise.all(galleryPromises);
       })
       .then(results => {
-        results = results.filter(gallery => gallery);
-        console.log('number of galleries', results.length);
-        res.send(results);
+        // filter ignored galleries
+        res.send(results.filter(result => !result.ignore));
       })
       .catch(err => {
         console.log(`Error while fetching artists from mongodb\n`, err);
@@ -38,4 +30,28 @@ const getArtist = (req, res) => {
       });
 };
 
-export default {create, getArtist};
+const updateArtist = (req, res) => {
+  const {artistName} = req.params;
+  console.log(`request body: `, req.body);
+  const {track, read, ignore, ignoreReason, priority, cleaned, observations} = req.body;
+
+  const updateObject = {};
+
+  (read !== undefined) && (updateObject.read = read);
+  (ignore !== undefined) && (updateObject.ignore = ignore);
+  (priority !== undefined) && (updateObject.priority = priority);
+  (ignoreReason !== undefined) && (updateObject.ignoreReason = ignoreReason);
+  (track !== undefined) && (updateObject.track = track);
+  (cleaned !== undefined) && (updateObject.cleaned = cleaned);
+  (observations !== undefined) && (updateObject.observations = observations);
+
+  return Artist
+      .findOneAndUpdate({name: artistName}, {$set: updateObject})
+      .then(_ => res.send(`${artistName} update successful`))
+      .catch(_ => {
+        console.log(`error in ignoring artist ${artistName}: `, _);
+        res.send(`${Object.keys(updateObject)} update failed`);
+      });
+};
+
+export default {fetchArtist, updateArtist};
