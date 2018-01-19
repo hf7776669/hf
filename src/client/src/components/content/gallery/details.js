@@ -98,8 +98,9 @@ class Details extends Component {
   ignoreGallery(serialNo) {
     console.log('Ignore: ', serialNo);
     return axios.post(`/api/galleries/${serialNo}`, {ignore: true})
-        .then(({data: msg}) => {
-          if (msg === 'Ignore update successful') {
+        .then(({data}) => {
+          const {msg} = data;
+          if (msg === 'Update successful') {
             console.log(`Gallery ${serialNo} Ignored`);
           } else {console.log(`Gallery ${serialNo} could not be ignored`);}
         });

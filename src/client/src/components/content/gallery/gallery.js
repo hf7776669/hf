@@ -42,7 +42,7 @@ class Gallery extends Component {
   }
 
   getCoordinates() {
-    console.log(`this.refs`, this.refs.targetDiv);
+//    console.log(`this.refs`, this.refs.targetDiv);
     const node = this.refs.targetDiv;
     var specs  = node.getBoundingClientRect();
 //    console.log('specs: ', specs);
