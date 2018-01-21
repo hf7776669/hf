@@ -4,13 +4,15 @@
 *   
 * NOTABLE FEATURES
 *   - Controller pattern for Node Express Routes
-* */
+*   - express Promise Router is a direct replacement for express Router 
+*/
 
-import express from 'express';
+
+import expressPromiseRouter from 'express-promise-router';
 
 import galleryController from './gallery-controller';
 
-const Router = express.Router();
+const Router = expressPromiseRouter();
 
 Router
     .route('/update')
