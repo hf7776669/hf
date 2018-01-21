@@ -39,7 +39,15 @@ const updateArtist = async (req, res) => {
   (cleaned !== undefined) && (updateObject.cleaned = cleaned);
   (observations !== undefined) && (updateObject.observations = observations);
 
-  await Artist.findOneAndUpdate({name: artistName}, {$set: updateObject});
+  console.log(artistName);
+  console.log(`updateObject`, updateObject);
+
+  await Artist.findOneAndUpdate({name: artistName},
+      {$set: updateObject});
+
+  if (ignore === true) await Gallery.update({artists: artistName},
+      {$set: updateObject}, {multi: true});
+
 
   res.send(`${artistName} update successful`);
 };

@@ -10,6 +10,7 @@
 import fetchNewGalleries from './hf/update-new-galleries';
 import getLatestDBGallery from './db-ops/get-latest-gallery';
 import Gallery from './gallery-model';
+import Artist from '../artist/artist-model';
 import config from '../config/';
 
 const {pageSize} = config.pagination;
@@ -57,7 +58,8 @@ const updateGallery = async (req, res) => {
 
 const fetchGalleries = async (req, res) => {
   console.log(`Getting galleries`);
-  const {page = 1} = req.query;
+  const {page = 1, cleaned} = req.query;
+
 
   const galleries = await Gallery
       .find({ignore: {$ne: true}})
@@ -65,7 +67,9 @@ const fetchGalleries = async (req, res) => {
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 
-  res.send(galleries);
+  const filteredGalleries = await filterGalleries(galleries, cleaned);
+
+  res.send(filteredGalleries);
 };
 
 const getLatest = async (req, res) => {
@@ -85,10 +89,51 @@ const updateDb = async (req, res) => {
   //TODO: Client's axios library will use received data to update state
 
   const data = await fetchNewGalleries();
-  res.send(data); 
+  res.send(data);
 };
 
 export default {
   download, updateDb, fetchGallery, fetchGalleries, getLatest, updateGallery
 };
-  
+
+//filterGalleries
+async function filterGalleries(galleries, cleaned) {
+  const galleryPromises    = galleries.map(gallery =>
+      getGalleryStatus(gallery)
+          .then(status => {
+            console.log(`computed status: `, status);
+
+            const result = ({
+              ...JSON.parse(JSON.stringify(gallery)), ...status
+            });
+
+            console.log(
+                `\nresult: ignore: ${result.ignore}, cleaned: ${result.cleaned}`);
+            return result;
+          })
+  );
+  const completedGalleries = await Promise.all(galleryPromises);
+
+  return completedGalleries.filter(
+      gallery => !(gallery.ignore ||
+          (gallery.cleaned && (cleaned === 'hide'))));
+}
+
+async function getGalleryStatus(gallery) {
+  const artistPromises = gallery.artists.map(
+      artistName => Artist
+          .findOne({name: artistName})
+          .then(({ignore, cleaned}) => ({ignore, cleaned})));
+
+  const artists = await Promise.all(artistPromises);
+
+  artists.map(({ignore, cleaned}) => console.log(
+      `artist ignore: ${ignore}, cleaned: ${cleaned}`));
+
+  return artists.reduce((acc, currentValue) => {
+    return ({
+      ignore : !!(acc.ignore && currentValue.ignore),
+      cleaned: !!(acc.cleaned * currentValue.cleaned)
+    });
+  }, {ignore: 1, cleaned: 1});
+}

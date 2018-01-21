@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const badTags = [
   'Shotacon', 'Lolicon', 'Guro', 'Snuff',
-  'Bestiality', 'Dog', 'Tentacles', '', '', '', ''
+  'Bestiality', 'Dog', 'Tentacles', 'Smegma', '', '', ''
 ];
 
 const Wrapper = styled.div`

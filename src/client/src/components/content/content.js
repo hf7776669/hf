@@ -67,8 +67,9 @@ class Content extends React.Component {
     super(props);
     this.getArtistGalleries = this.getArtistGalleries.bind(this);
     this.filterGalleries    = this.filterGalleries.bind(this);
+    this.filterCleanArtists = this.filterCleanArtists.bind(this);
     this.getPage            = this.getPage.bind(this);
-    this.state              = {page: 1};
+    this.state              = {page: 1, hideCleanArtist: false};
   }
 
   componentWillMount() {
@@ -113,7 +114,11 @@ class Content extends React.Component {
   }
 
   getPage(page) {
-    return axios.get(`/api/galleries?page=${page}`)
+    const {hideCleanArtist} = this.state;
+
+    const cleaned = hideCleanArtist ? 'hide' : 'show';
+    return axios.get(
+        `/api/galleries?page=${page}${hideCleanArtist && '&cleaned=hide'}`)
         .then(axiosResult => {
           this.setState(() => ({
             galleries : sortGalleries(axiosResult.data),
@@ -130,8 +135,15 @@ class Content extends React.Component {
         });
   }
 
+  filterCleanArtists() {
+    const {page} = this.state;
+    this.setState(() => ({
+      hideCleanArtist: true
+    }), () => this.getPage(page));
+  }
+
   render() {
-    const {galleries, nameFilter, page, artistView, artistName} = this.state;
+    const {galleries, nameFilter, page, artistView, artistName, hideCleanArtist} = this.state;
     console.log(`this.state.galleries:- `, galleries);
     return (
         <div>
@@ -151,6 +163,11 @@ class Content extends React.Component {
             {artistView &&
             <button onClick={() => this.artistClean(artistName)}>Artist
               Clean</button>}
+
+            {(!artistView && !hideCleanArtist) &&
+            <button onClick={() => this.filterCleanArtists()}>Hide
+              Clean</button>}
+            
           </Search>
           <ContentBody>
             {galleries ? galleries.filter(
