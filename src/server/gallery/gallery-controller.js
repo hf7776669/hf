@@ -60,7 +60,6 @@ const fetchGalleries = async (req, res) => {
   console.log(`Getting galleries`);
   const {page = 1, cleaned} = req.query;
 
-
   const galleries = await Gallery
       .find({ignore: {$ne: true}})
       .sort({serialNo: -1})

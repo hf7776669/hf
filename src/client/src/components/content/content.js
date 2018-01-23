@@ -110,7 +110,7 @@ class Content extends React.Component {
 
   filterGalleries(event) {
     const {value} = event.target;
-    this.setState(() => ({nameFilter: value}));
+    this.setState(() => ({strFilter: value}));
   }
 
   getPage(page) {
@@ -143,13 +143,15 @@ class Content extends React.Component {
   }
 
   render() {
-    const {galleries, nameFilter, page, artistView, artistName, hideCleanArtist} = this.state;
+    const {galleries, strFilter, page, artistView, artistName, hideCleanArtist} = this.state;
     console.log(`this.state.galleries:- `, galleries);
     return (
         <div>
+
           <Search>
+            <Pagination activePage={page} fetchPage={this.getPage}/>
             <input onChange={(e) => this.filterGalleries(e)}
-                   style={{width: '35%', height: '40px'}}/>
+                   style={{width: '20%', height: '40px'}}/>
             <button onClick={() => this.sortGalleries('name',
                 'asc')}>By Name
             </button>
@@ -167,14 +169,23 @@ class Content extends React.Component {
             {(!artistView && !hideCleanArtist) &&
             <button onClick={() => this.filterCleanArtists()}>Hide
               Clean</button>}
-            
+
           </Search>
           <ContentBody>
             {galleries ? galleries.filter(
                 (gallery) => {
-                  if (!nameFilter) {return 1;}
-                  return gallery.name.toLowerCase()
-                      .includes(nameFilter.toLowerCase());
+                  if (!strFilter) {return 1;}
+
+                  const nameFound = gallery.name.toLowerCase()
+                      .includes(strFilter.toLowerCase());
+
+                  if (nameFound) return 1;
+
+                  const tagsMatched = gallery.tags.filter(
+                      tag => tag.toLowerCase()
+                          .includes(strFilter.toLowerCase()));
+
+                  return tagsMatched.length;
                 })
                 .map(
                     gallery => <Gallery key={gallery.serialNo}
@@ -185,7 +196,7 @@ class Content extends React.Component {
                 ) : 'Loading'
             }
           </ContentBody>
-          <Pagination activePage={page} fetchPage={this.getPage}/>
+
         </div>
     );
   }

@@ -4,8 +4,8 @@ import he from 'he';
 import axios from 'axios';
 
 const badTags = [
-  'Shotacon', 'Lolicon', 'Guro', 'Snuff',
-  'Bestiality', 'Dog', 'Tentacles', 'Smegma', '', '', ''
+  'shotacon', 'lolicon', 'guro', 'snuff', 'scat',
+  'bestiality', 'dog', 'tentacles', 'smegma', 'vomit', '', ''
 ];
 
 const Wrapper = styled.div`
@@ -84,16 +84,18 @@ class Details extends Component {
   }
 
   tagType(tag) {
-    if (badTags.indexOf(tag) >= 0) {
-      return <li style={{fontWeight: 'bold', margin: '0 10px 0 0'}} key={tag}>
+    if (badTags.indexOf(tag.toLowerCase()) >= 0) {
+      return <li
+          style={{fontWeight: 'bold', margin: '0 10px 0 0', color: 'red'}}
+          key={tag}>
         <s>{tag}</s>
       </li>;
-    }
+    } 
     else {
-      return <li style={{fontWeight: 'bold', margin: '0 10px 0 0'}}
+      return <li style={{margin: '0 10px 0 0'}}
                  key={tag}>{tag}</li>;
     }
-  }
+  } 
 
   ignoreGallery(serialNo) {
     console.log('Ignore: ', serialNo);
@@ -130,8 +132,6 @@ class Details extends Component {
             </Tags>
             <Li>Download</Li>
             <Button onClick={() => this.ignoreGallery(serialNo)}>Ignore</Button>
-            <Li><a onClick={this.toggleRead}>Read</a></Li>
-            <Li># pictures</Li>
             <Li>Series</Li>
             <h3>Artists:</h3>
             <Artists>

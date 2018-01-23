@@ -25,7 +25,7 @@ let mongoLink;
 switch (process.env.DB) {
   case 'local':
     mongoLink = config.localMongo;
-    break;
+    break; 
   case 'test':
     mongoLink = config.testMongoConnection;
     break;
