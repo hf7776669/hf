@@ -4,8 +4,9 @@ import he from 'he';
 import axios from 'axios';
 
 const badTags = [
-  'shotacon', 'lolicon', 'guro', 'snuff', 'scat',
-  'bestiality', 'dog', 'tentacles', 'smegma', 'vomit', '', ''
+  'shotacon', 'lolicon', 'guro', 'snuff', 'scat', 'bestiality', 'dog',
+  'tentacles', 'smegma', 'vomit', 'crossdressing', 'diaper',
+  'infantilism', '', '', '', '', '', ''
 ];
 
 const Wrapper = styled.div`
@@ -90,12 +91,12 @@ class Details extends Component {
           key={tag}>
         <s>{tag}</s>
       </li>;
-    } 
+    }
     else {
       return <li style={{margin: '0 10px 0 0'}}
                  key={tag}>{tag}</li>;
     }
-  } 
+  }
 
   ignoreGallery(serialNo) {
     console.log('Ignore: ', serialNo);

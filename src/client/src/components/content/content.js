@@ -129,7 +129,8 @@ class Content extends React.Component {
   }
 
   artistClean(name) {
-    return axios.post(`/api/artists/${name}`, {cleaned: true})
+    return axios.post(`/api/artists/${name}`,
+        {cleaned: true, cleanedBefore: true})
         .then(() => {
           console.log(`Updated artist ${name} as sorted`);
         });
