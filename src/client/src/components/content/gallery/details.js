@@ -93,7 +93,7 @@ class Details extends Component {
       </li>;
     }
     else {
-      return <li style={{margin: '0 10px 0 0'}}
+      return <li style={{margin: '0 10px 0 0', padding: '0 10px 0 0'}}
                  key={tag}>{tag}</li>;
     }
   }
