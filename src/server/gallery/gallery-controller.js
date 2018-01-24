@@ -119,20 +119,29 @@ async function filterGalleries(galleries, cleaned) {
 }
 
 async function getGalleryStatus(gallery) {
-  const artistPromises = gallery.artists.map(
-      artistName => Artist
-          .findOne({name: artistName})
-          .then(({ignore, cleaned}) => ({ignore, cleaned})));
+  let result = {};
+  if (gallery.artists.length) {
+    const artistPromises = gallery.artists.map(
+        artistName => Artist
+            .findOne({name: artistName})
+            .then(({ignore, cleaned}) => ({ignore, cleaned})));
 
-  const artists = await Promise.all(artistPromises);
+    const artists = await Promise.all(artistPromises);
 
-  artists.map(({ignore, cleaned}) => console.log(
-      `artist ignore: ${ignore}, cleaned: ${cleaned}`));
+    artists.map(({ignore, cleaned}) => console.log(
+        `artist ignore: ${ignore}, cleaned: ${cleaned}`));
 
-  return artists.reduce((acc, currentValue) => {
-    return ({
-      ignore : !!(acc.ignore && currentValue.ignore),
-      cleaned: !!(acc.cleaned * currentValue.cleaned)
-    });
-  }, {ignore: 1, cleaned: 1});
+    result = artists.reduce((acc, currentValue) => {
+      return ({
+        ignore : !!(acc.ignore && currentValue.ignore),
+        cleaned: !!(acc.cleaned * currentValue.cleaned)
+      });
+    }, {ignore: 1, cleaned: 1});
+  } else {
+    // No artists tagged to the gallery
+    // Return default false values for the gallery
+    result = {ignore: false, cleaned: false};
+  }
+
+  return result;
 }

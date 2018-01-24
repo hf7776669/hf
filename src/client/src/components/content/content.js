@@ -116,9 +116,8 @@ class Content extends React.Component {
   getPage(page) {
     const {hideCleanArtist} = this.state;
 
-    const cleaned = hideCleanArtist ? 'hide' : 'show';
     return axios.get(
-        `/api/galleries?page=${page}${hideCleanArtist && '&cleaned=hide'}`)
+        `/api/galleries?page=${page}${hideCleanArtist ? '&cleaned=hide' : ''}`)
         .then(axiosResult => {
           this.setState(() => ({
             galleries : sortGalleries(axiosResult.data),

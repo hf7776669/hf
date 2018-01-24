@@ -52,12 +52,10 @@ class Gallery extends Component {
   render() {
     const {gallery, getArtistGalleries} = this.props;
     return (
-
         <Wrapper
             onMouseEnter={this.showDetails}
             onMouseLeave={this.hideDetails}>
           <div ref='targetDiv'>
-
             <Figure gallery={gallery}/>
             <Caption gallery={gallery}/>
           </div>

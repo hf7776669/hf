@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import styled from 'styled-components';
 import he from 'he';
 import axios from 'axios';
@@ -24,8 +24,7 @@ const hoverColor = `&:hover {color: #c3c1c7;}`;
 
 const Li = styled.li`
   color: #c19bb0;
-  
-  font-size:14px;
+font-size:14px;
   font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: bold;
@@ -63,6 +62,11 @@ const Tags = styled.ul`
 
 const Artists = Tags.extend`
   cursor: pointer;
+`;
+
+const Item = styled.span`
+  font-size: 16px;
+  font-weight: 400;
 `;
 
 const Button = styled.button`
@@ -110,7 +114,7 @@ class Details extends Component {
   }
 
   render() {
-    const {name, link, tags, pages, serialNo, artists} = this.props.gallery;
+    const {name, link, tags, pages, serialNo, artists, parodies} = this.props.gallery;
 
     const {getArtistGalleries} = this.props;
 
@@ -131,22 +135,29 @@ class Details extends Component {
             <Tags>
               {tags && tags.map(tag => this.tagType(tag))}
             </Tags>
+
+            {parodies.length ? (
+                <Fragment>
+                  <Item>Parodies:</Item>
+                  <span style={{fontSize: '14px'}}>{parodies}</span>
+                </Fragment>
+            ) : ''}
             <Li>Download</Li>
             <Button onClick={() => this.ignoreGallery(serialNo)}>Ignore</Button>
             <Li>Series</Li>
-            <h3>Artists:</h3>
-            <Artists>
-              {artists && artists.map(artist => {
-                if (typeof artist === 'object') {
-                  artist = artist.name;
-                }
-                return (
-                    <li style={{fontWeight: 'bold', margin: '0 10px 0 0'}}
-                        key={artist}><a onClick={() => getArtistGalleries(
-                        artist)}>{artist}</a></li>
-                );
-              })}
-            </Artists>
+
+            {artists.length ? (
+                <Fragment>
+                  <Item>Artists:</Item>
+                  <Artists>
+                    {artists && artists.map(artist => (
+                        <li style={{fontWeight: 'bold', margin: '0 10px 0 0'}}
+                            key={artist}><a onClick={() => getArtistGalleries(
+                            artist)}>{artist}</a></li>
+                    ))}
+                  </Artists>
+                </Fragment>
+            ) : ''}
             <Li>Priority</Li>
             <Li>Category</Li>
 
