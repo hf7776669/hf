@@ -10,7 +10,7 @@ const gallerySchema = new Schema({
   tags        : {type: Array},
   priority    : {type: Number, default: 5},
   artists     : {type: Array},
-  group       : {type: Array},
+  groups      : {type: Array},
   pages       : {type: Number, required: true},
   read        : {type: Boolean, default: false},
   downloaded  : {type: Boolean, default: false},

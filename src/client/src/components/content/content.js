@@ -155,8 +155,8 @@ class Content extends React.Component {
             <button onClick={() => this.sortGalleries('name',
                 'asc')}>By Name
             </button>
-            <button onClick={() => this.sortGalleries('pages',
-                'desc')}>By Pages
+            <button onClick={() => this.sortGalleries('parodies',
+                'desc')}>By Parodies
             </button>
 
             {artistView &&
