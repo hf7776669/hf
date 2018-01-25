@@ -1,14 +1,21 @@
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
-  left: 100%;
+const Container = styled.div` 
   z-index: 200;
   color: #a8a7a7;
   font-size: 2em;
   top:0;
   position: absolute;
   background: rgb(52,52,52);
-  width: 353px;
+  width: 280px;
+`;
+
+const ContainerRight = Container.extend`
+  left:100%;
+`;
+
+const ContainerLeft = Container.extend`
+  right: 100%;
 `;
 
 const hoverColor = `&:hover {color: #c3c1c7;}`;
@@ -93,15 +100,6 @@ const LiBad = Li.extend`
 
 
 export {
-  Wrapper,
-  LiItem,
-  Name,
-  P,
-  Tags,
-  Artists,
-  Item,
-  Button,
-  Li,
-  LiGood,
-  LiBad
+  ContainerLeft, ContainerRight, LiItem, Name, P, Tags,
+  Artists, Item, Button, Li, LiGood, LiBad
 };

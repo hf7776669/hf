@@ -3,8 +3,8 @@ import he from 'he';
 import axios from 'axios';
 
 import {
-  Artists, Button, Item, Li, LiBad, LiGood, LiItem, Name, P, Tags,
-  Wrapper
+  Artists, Button, ContainerLeft, ContainerRight, Item, Li, LiBad, LiGood,
+  LiItem, Name, P, Tags
 } from './details-styles';
 
 const badTags = [
@@ -40,7 +40,7 @@ const A = ({filterGalleries, children, filter}) => (
 
 
 class Details extends Component {
-  
+
   tagType(tag) {
     const {filterGalleries} = this.props;
 
@@ -80,10 +80,13 @@ class Details extends Component {
         });
   }
 
+
   render() {
     const {name, link, tags, pages, serialNo, artists, parodies} = this.props.gallery;
 
-    const {getArtistGalleries, filterGalleries} = this.props;
+    const {getArtistGalleries, filterGalleries, position} = this.props;
+
+    const Container = position === 'left' ? ContainerLeft : ContainerRight;
 
     //TODO: Create separate actions for
 //    3. Actions 
@@ -92,7 +95,7 @@ class Details extends Component {
 //    - Series
 
     return (
-        <Wrapper>
+        <Container>
           <ul>
             <Name><a href={link}>{he.decode(name)}</a></Name>
             <P style={{fontSize: '10px'}}><b>{pages} pages</b></P>
@@ -132,7 +135,7 @@ class Details extends Component {
             <LiItem>Category</LiItem>
 
           </ul>
-        </Wrapper>
+        </Container>
     );
   }
 }

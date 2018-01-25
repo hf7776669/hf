@@ -13,17 +13,21 @@ import {Wrapper} from './gallery-styles';
 class Gallery extends Component {
   constructor(props) {
     super(props);
-    this.showDetails    = this.showDetails.bind(this);
-    this.hideDetails    = this.hideDetails.bind(this);
-    this.getCoordinates = this.getCoordinates.bind(this);
-    this.state          = {
+    this.showDetails = this.showDetails.bind(this);
+    this.hideDetails = this.hideDetails.bind(this);
+    this.getPosition = this.getPosition.bind(this);
+    this.state       = {
       isHovering : false,
-      showDetails: false
+      showDetails: false,
+      window     : {
+        width : null,
+        height: null
+      }
     };
   }
 
   showDetails() {
-    this.getCoordinates();
+    this.getPosition();
     this.setState(() => ({isHovering: true}));
   }
 
@@ -31,16 +35,33 @@ class Gallery extends Component {
     this.setState(() => ({isHovering: false}));
   }
 
-  getCoordinates() {
-//    console.log(`this.refs`, this.refs.targetDiv);
-//    const node = this.refs.targetDiv;
-//    var specs  = node.getBoundingClientRect();
-//    console.log('specs: ', specs);
-//    console.log('window: ', window.innerWidth + 'x' + window.innerHeight);
+  getPosition() {
+    console.log(`this.refs`, this.refs.targetDiv);
+    const node = this.refs.targetDiv;
+    var specs  = node.getBoundingClientRect();
+    console.log('specs: ', specs);
+    console.log('window: ', window.innerWidth + 'x' + window.innerHeight);
+
+    this.setState(() => ({
+      window: {
+        width : window.innerWidth,
+        height: window.innerHeight
+      },
+      xPos  : Math.floor(specs.x),
+      yPos  : Math.floor(specs.y)
+    }));
   }
 
   render() {
     const {gallery, getArtistGalleries, filterGalleries} = this.props;
+
+
+    const {window, xPos, yPos} = this.state;
+
+
+    const detailsPosition = (window.width - xPos - 240 - 280) > 0
+        ? 'right'
+        : 'left';
 
     return (
         <Wrapper>
@@ -51,9 +72,13 @@ class Gallery extends Component {
             <Details gallery={gallery}
                      getArtistGalleries={getArtistGalleries}
                      filterGalleries={filterGalleries}
+                     position={detailsPosition}
             />}
           </div>
           <Caption gallery={gallery}/>
+          <br/>
+          <div><p>{xPos}x{yPos} {window.width}x{window.height}</p></div>
+          <div>{detailsPosition}</div>
         </Wrapper>
     );
   }
