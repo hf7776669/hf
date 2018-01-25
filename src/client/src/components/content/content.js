@@ -178,13 +178,13 @@ class Content extends React.Component {
                   return 0;
                 })
                 .map(
-                    gallery => <Gallery key={gallery.serialNo}
-                                        gallery={gallery}
-                                        getArtistGalleries={this.getArtistGalleries}
-                                        filterGalleries={this.filterGalleries}
-                    >
-
-                    </Gallery>
+                    gallery => (
+                        <Gallery key={gallery.serialNo}
+                                 gallery={gallery}
+                                 getArtistGalleries={this.getArtistGalleries}
+                                 filterGalleries={this.filterGalleries}>
+                        </Gallery>
+                    )
                 ) : 'Loading'
             }
           </ContentBody>
