@@ -36,7 +36,7 @@ switch (process.env.DB) {
     mongoLink = config.prodMongo;
     break;
   default:
-    mongoLink = config.localMongo;
+    mongoLink = config.localMongo; 
 }
 
 console.log(`mongoLink`, mongoLink);

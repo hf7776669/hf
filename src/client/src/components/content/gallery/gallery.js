@@ -51,16 +51,17 @@ class Gallery extends Component {
 
   render() {
     const {gallery, getArtistGalleries} = this.props;
+
     return (
-        <Wrapper
-            onMouseEnter={this.showDetails}
-            onMouseLeave={this.hideDetails}>
-          <div ref='targetDiv'>
+        <Wrapper>
+          <div ref='targetDiv' onMouseEnter={this.showDetails}
+               onMouseLeave={this.hideDetails}>
             <Figure gallery={gallery}/>
-            <Caption gallery={gallery}/>
+            {this.state.isHovering &&
+            <Details gallery={gallery}
+                     getArtistGalleries={getArtistGalleries}/>}
           </div>
-          {this.state.isHovering &&
-          <Details gallery={gallery} getArtistGalleries={getArtistGalleries}/>}
+          <Caption gallery={gallery}/> 
         </Wrapper>
     );
   }
