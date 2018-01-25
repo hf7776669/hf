@@ -85,14 +85,11 @@ class Details extends Component {
 
     const {getArtistGalleries, filterGalleries} = this.props;
 
-    //TODO: Create separate components for
-//    1. Info {name, pages, author, pages, category}
-//    2. Tags
+    //TODO: Create separate actions for
 //    3. Actions 
 //    - Download
 //    - Read
 //    - Series
-//    - Ignore
 
     return (
         <Wrapper>
@@ -100,7 +97,7 @@ class Details extends Component {
             <Name><a href={link}>{he.decode(name)}</a></Name>
             <P style={{fontSize: '10px'}}><b>{pages} pages</b></P>
             <Tags>
-              {tags && tags.map(tag => this.tagType(tag))}
+              {tags && tags.sort().map(tag => this.tagType(tag))}
             </Tags>
 
             {parodies.length ? (

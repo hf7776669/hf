@@ -61,6 +61,7 @@ class Content extends React.Component {
         .get(`/api/artists/${artistName}`)
         .then((axiosResult) => {
           const {data} = axiosResult;
+          console.log(axiosResult);
           this.setState(() => ({
             galleries : data.length ? sortGalleries(data) : [],
             artistView: true,
@@ -178,13 +179,13 @@ class Content extends React.Component {
                   return 0;
                 })
                 .map(
-                    gallery => <Gallery key={gallery.serialNo}
-                                        gallery={gallery}
-                                        getArtistGalleries={this.getArtistGalleries}
-                                        filterGalleries={this.filterGalleries}
-                    >
-
-                    </Gallery>
+                    gallery => (
+                        <Gallery key={gallery.serialNo}
+                                 gallery={gallery}
+                                 getArtistGalleries={this.getArtistGalleries}
+                                 filterGalleries={this.filterGalleries}>
+                        </Gallery>
+                    )
                 ) : 'Loading'
             }
           </ContentBody>
