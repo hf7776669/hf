@@ -5,33 +5,10 @@
 */
 
 import React from 'react';
-import styled from 'styled-components';
 import Gallery from './gallery/gallery';
 import axios from 'axios';
 import Pagination from '../pagination';
-
-const ContentBody = styled.div`
- &&& {padding: 5px;
-  position: relative;
-  margin: 50px 0;
-  display: flex;
-  flex-wrap: wrap;
-  //flex-grow: 1;
-  justify-content: space-between;}
-`;
-
-const Search = styled.div`
-  &&& {
-    padding: 10px;
-    display: flex;
-    justify-content: space-around;
-    position: fixed;
-    top: 0;
-    background: black;
-    width: 100%;
-    z-index: 100;
-  }
-`;
+import {ContentBody, Search} from './content-styles';
 
 const sortGalleries = (
     galleries, sortParameter = 'serialNo', sortDirection = 'desc') => {
@@ -43,7 +20,7 @@ const sortGalleries = (
     case 'desc':
       comparator = 1;
       break;
-    case 'default':
+    default:
       return new Error('Incorrect Sort Parameter');
   }
   return galleries.sort(
@@ -69,7 +46,7 @@ class Content extends React.Component {
     this.filterGalleries    = this.filterGalleries.bind(this);
     this.filterCleanArtists = this.filterCleanArtists.bind(this);
     this.getPage            = this.getPage.bind(this);
-    this.state              = {page: 1, hideCleanArtist: false};
+    this.state              = {page: 1, hideCleanArtist: false, strFilter: ''};
   }
 
   componentWillMount() {
@@ -84,11 +61,11 @@ class Content extends React.Component {
         .get(`/api/artists/${artistName}`)
         .then((axiosResult) => {
           const {data} = axiosResult;
-          console.log(axiosResult);
           this.setState(() => ({
             galleries : data.length ? sortGalleries(data) : [],
             artistView: true,
-            artistName
+            artistName,
+            strFilter : ''
           }));
         });
   }
@@ -108,9 +85,13 @@ class Content extends React.Component {
         });
   }
 
-  filterGalleries(event) {
+  filterInput(event) {
     const {value} = event.target;
-    this.setState(() => ({strFilter: value}));
+    this.filterGalleries(value);
+  }
+
+  filterGalleries(filterString) {
+    this.setState(() => ({strFilter: filterString}));
   }
 
   getPage(page) {
@@ -122,7 +103,8 @@ class Content extends React.Component {
           this.setState(() => ({
             galleries : sortGalleries(axiosResult.data),
             page      : page,
-            artistView: false
+            artistView: false,
+            strFilter : ''
           }));
         });
   }
@@ -144,14 +126,14 @@ class Content extends React.Component {
 
   render() {
     const {galleries, strFilter, page, artistView, artistName, hideCleanArtist} = this.state;
-    console.log(`this.state.galleries:- `, galleries);
     return (
         <div>
 
           <Search>
             <Pagination activePage={page} fetchPage={this.getPage}/>
-            <input onChange={(e) => this.filterGalleries(e)}
-                   style={{width: '20%', height: '40px'}}/>
+            <input onChange={(e) => this.filterInput(e)}
+                   style={{width: '20%', height: '40px'}}
+                   value={this.state.strFilter}/>
             <button onClick={() => this.sortGalleries('name',
                 'asc')}>By Name
             </button>
@@ -172,7 +154,7 @@ class Content extends React.Component {
 
           </Search>
           <ContentBody>
-            {galleries ? galleries.filter(
+            {galleries && galleries.length ? galleries.filter(
                 (gallery) => {
                   if (!strFilter) {return 1;}
 
@@ -185,12 +167,22 @@ class Content extends React.Component {
                       tag => tag.toLowerCase()
                           .includes(strFilter.toLowerCase()));
 
-                  return tagsMatched.length;
+                  if (tagsMatched.length) return tagsMatched.length;
+
+                  const parodiesMatched = gallery.parodies.filter(
+                      parody => parody.toLowerCase()
+                          .includes(strFilter.toLowerCase()));
+
+                  if (parodiesMatched.length) return parodiesMatched.length;
+
+                  return 0;
                 })
                 .map(
                     gallery => <Gallery key={gallery.serialNo}
                                         gallery={gallery}
-                                        getArtistGalleries={this.getArtistGalleries}>
+                                        getArtistGalleries={this.getArtistGalleries}
+                                        filterGalleries={this.filterGalleries}
+                    >
 
                     </Gallery>
                 ) : 'Loading'

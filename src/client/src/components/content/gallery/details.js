@@ -1,7 +1,11 @@
 import React, {Component, Fragment} from 'react';
-import styled from 'styled-components';
 import he from 'he';
 import axios from 'axios';
+
+import {
+  Artists, Button, Item, Li, LiBad, LiGood, LiItem, Name, P, Tags,
+  Wrapper
+} from './details-styles';
 
 const badTags = [
   'shotacon', 'lolicon', 'guro', 'snuff', 'scat', 'bestiality', 'dog',
@@ -28,114 +32,45 @@ const goodTags = [
   '', '', '', '', '', ''
 ];
 
-const Wrapper = styled.div`
-  left: 100%;
-  z-index: 200;
-  color: #a8a7a7;
-  font-size: 2em;
-  top:0;
-  position: absolute;
-  background: rgb(52,52,52);
-  width: 353px;
-`;
+const A = ({filterGalleries, children, filter}) => (
+    <a onClick={() => filterGalleries(filter)} style={{cursor: 'pointer'}}>
+      {children}
+    </a>
+);
 
-const hoverColor = `&:hover {color: #c3c1c7;}`;
-
-const LiItem = styled.li`
-  color: #c19bb0;
-  font-size:14px;
-  font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: bold;
-  ${hoverColor}
-`;
-
-const Name = styled.h4`
-  font-size: 18px;
-  ${hoverColor};
-  cursor: pointer ;
-  
-  > a {
-    color: #c3c1c7;
-    text-decoration: none;
-    &:hover {
-      color: #ff97a3;
-    }
-  }
-`;
-
-const P = styled.p`
-  color: palevioletred;
-  font-size: 14px; 
-  font-style: italic;
-`;
-
-const Tags = styled.ul`
-  display: flex;
-  list-style: square;
-  justify-content: space-between;
-  font-size: 14px;
-  flex-wrap: wrap;
-  padding: 0 0px 0 0px;
-  margin: 0 5px;
-`;
-
-const Artists = Tags.extend`
-  cursor: pointer;
-`;
-
-const Item = styled.span`
-  font-size: 16px;
-  font-weight: 400;
-`;
-
-const Li = styled.li`
-  margin: 0 0 0 10px;
-`;
-
-const LiBad = Li.extend`
-  color: red; 
-`;
-
-const LiGood = styled.li`
-  color: green;
-  font-weight: bold;
-`;
-
-const Button = styled.button`
-  background: orangered;
-  color: whitesmoke;
-  font-weight: 400;
-  line-height: 2.5em;
-  padding: 3px 15px;
-  margin: 0 15px;
-  border-radius: 8px;
-  text-align: center;
-  align-items: center;
-  float: right; 
-  font-size: medium;
-`;
 
 class Details extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+  
   tagType(tag) {
+    const {filterGalleries} = this.props;
+
     if (badTags.indexOf(tag.toLowerCase()) >= 0) {
-      return <LiBad key={tag}><s>{tag}</s></LiBad>;
+      return (
+          <LiBad key={tag}>
+            <A filter={tag} filterGalleries={filterGalleries}>
+              <s>{tag}</s>
+            </A>
+          </LiBad>
+      );
     }
     else {
       if (goodTags.indexOf(tag.toLowerCase()) >= 0) {
-        return <LiGood key={tag}><i>{tag}</i></LiGood>;
+        return (
+            <LiGood key={tag}>
+              <A filter={tag} filterGalleries={filterGalleries}>{tag}</A>
+            </LiGood>
+        );
       }
 
-      return <Li key={tag}>{tag}</Li>;
+      return (
+          <Li key={tag}>
+            <A filter={tag} filterGalleries={filterGalleries}>{tag}</A>
+          </Li>
+      );
     }
   }
 
   ignoreGallery(serialNo) {
-    console.log('Ignore: ', serialNo);
     return axios.post(`/api/galleries/${serialNo}`, {ignore: true})
         .then(({data}) => {
           const {msg} = data;
@@ -148,7 +83,7 @@ class Details extends Component {
   render() {
     const {name, link, tags, pages, serialNo, artists, parodies} = this.props.gallery;
 
-    const {getArtistGalleries} = this.props;
+    const {getArtistGalleries, filterGalleries} = this.props;
 
     //TODO: Create separate components for
 //    1. Info {name, pages, author, pages, category}
@@ -171,7 +106,12 @@ class Details extends Component {
             {parodies.length ? (
                 <Fragment>
                   <Item>Parodies:</Item>
-                  <span style={{fontSize: '14px'}}>{parodies}</span>
+
+                  {parodies.map(parody => (
+                      <A filter={parody} key={parody}
+                         filterGalleries={filterGalleries}>{parody}</A>
+                  ))}
+
                 </Fragment>
             ) : ''}
             <LiItem>Download</LiItem>
@@ -184,8 +124,9 @@ class Details extends Component {
                   <Artists>
                     {artists && artists.map(artist => (
                         <li style={{fontWeight: 'bold', margin: '0 10px 0 0'}}
-                            key={artist}><a onClick={() => getArtistGalleries(
-                            artist)}>{artist}</a></li>
+                            key={artist}>
+                          <a onClick={() => getArtistGalleries(
+                              artist)}>{artist}</a></li>
                     ))}
                   </Artists>
                 </Fragment>
