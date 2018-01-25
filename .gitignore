@@ -9,7 +9,6 @@ coverage/
 # production
 build/
 
-
 # ide
 .idea/
 
@@ -27,6 +26,7 @@ yarn-error.log*
 
 #log
 /log/
+*.log
 
 #temp folder
 temp/

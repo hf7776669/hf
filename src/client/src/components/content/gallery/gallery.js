@@ -4,21 +4,11 @@
 */
 
 import React, {Component} from 'react';
-import styled from 'styled-components';
 import Figure from './figure';
 import Caption from './caption';
 import Details from './details';
 
-const Wrapper = styled.div`
-  &&& {text-align: left;
-  width:17%;
-  min-width: 200px;
-  margin: 15px 7px;
-  padding: 0;
-  position: relative;
-  vertical-align: top;
-  display: inline-block;}
-`;
+import {Wrapper} from './gallery-styles';
 
 class Gallery extends Component {
   constructor(props) {
@@ -43,14 +33,14 @@ class Gallery extends Component {
 
   getCoordinates() {
 //    console.log(`this.refs`, this.refs.targetDiv);
-    const node = this.refs.targetDiv;
-    var specs  = node.getBoundingClientRect();
+//    const node = this.refs.targetDiv;
+//    var specs  = node.getBoundingClientRect();
 //    console.log('specs: ', specs);
 //    console.log('window: ', window.innerWidth + 'x' + window.innerHeight);
   }
 
   render() {
-    const {gallery, getArtistGalleries} = this.props;
+    const {gallery, getArtistGalleries, filterGalleries} = this.props;
 
     return (
         <Wrapper>
@@ -59,9 +49,11 @@ class Gallery extends Component {
             <Figure gallery={gallery}/>
             {this.state.isHovering &&
             <Details gallery={gallery}
-                     getArtistGalleries={getArtistGalleries}/>}
+                     getArtistGalleries={getArtistGalleries}
+                     filterGalleries={filterGalleries}
+            />}
           </div>
-          <Caption gallery={gallery}/> 
+          <Caption gallery={gallery}/>
         </Wrapper>
     );
   }

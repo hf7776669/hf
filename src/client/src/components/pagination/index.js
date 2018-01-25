@@ -2,9 +2,7 @@ import React from 'react';
 import {Pagination, PaginationItem, PaginationLink} from 'reactstrap';
 
 export default class Example extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+
 
   render() {
     const {activePage, fetchPage} = this.props;
@@ -23,19 +21,19 @@ export default class Example extends React.Component {
 
     return (
         <Pagination>
-          <PaginationItem disabled={activePage == 1}
+          <PaginationItem disabled={activePage === 1}
                           onClick={() => fetchPage(1)}>
             <PaginationLink>
               First
             </PaginationLink>
           </PaginationItem>
 
-          <PaginationItem disabled={activePage == 1}>
+          <PaginationItem disabled={activePage === 1}>
             <PaginationLink previous onClick={() => fetchPage(activePage - 1)}/>
           </PaginationItem>
 
           {pageArray.map((i) => (
-              <PaginationItem active={activePage === i}>
+              <PaginationItem active={activePage === i} key={i}>
                 <PaginationLink
                     onClick={() => fetchPage(i)}>{i}</PaginationLink>
               </PaginationItem>
@@ -45,7 +43,7 @@ export default class Example extends React.Component {
             <PaginationLink next onClick={() => fetchPage(activePage + 1)}/>
           </PaginationItem>
 
-          <PaginationItem disabled={activePage == 1}>
+          <PaginationItem disabled={activePage === 1}>
             <PaginationLink>Last</PaginationLink>
           </PaginationItem>
         </Pagination>
