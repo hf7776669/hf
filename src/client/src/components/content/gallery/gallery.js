@@ -44,7 +44,7 @@ class Gallery extends Component {
         width : window.innerWidth,
         height: window.innerHeight
       },
-      xPos  : Math.floor(specs.x),
+      xPos  : Math.floor(specs.x)
     }));
   }
 
