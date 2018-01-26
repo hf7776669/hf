@@ -19,4 +19,25 @@ const ItemCover = styled.div`
   border-radius: 7px;}
 `;
 
-export {Figure, Img, ItemCover};
+const Nav = styled.div`
+  width: 15%;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  z-index: 10;
+  background-color: orange;
+  opacity: 0;
+  &:hover {
+    opacity: 0.5;
+  }
+`;
+
+const PrevImage = Nav.extend`
+  left:0;
+`;
+
+const NextImage = Nav.extend`
+  right:0;
+`;
+
+export {Figure, Img, ItemCover, PrevImage, NextImage};
