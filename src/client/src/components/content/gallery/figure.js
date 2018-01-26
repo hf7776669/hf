@@ -4,22 +4,62 @@
 */
 
 import React from 'react';
-import {Figure, Img, ItemCover} from './figure-styles';
+import {Figure, Img, ItemCover, NextImage, PrevImage} from './figure-styles';
 
 class GalleryFigure extends React.Component {
+
+  state = {
+    coverImage: '',
+    picLink   : '',
+    imageNo   : null
+  };
+
+  componentDidMount() {
+    const {gallery}     = this.props;
+    const {imageLink}   = gallery;
+    const imageNo       = 1;
+    const [, , picLink] = imageLink.match(/(.com)(\/[\S]+)\//);
+
+    this.setState(() => ({
+      picLink, imageNo
+    }));
+  }
+
+  nextImage = () => {
+    const {imageNo} = this.state;
+    const {pages}   = this.props.gallery;
+    this.setState(() => ({
+      imageNo: imageNo % pages + 1
+    }));
+  };
+
+  prevImage = () => {
+    const {imageNo} = this.state;
+    const {pages}   = this.props.gallery;
+
+    this.setState(() => ({
+      imageNo: (imageNo === 1) ? pages : imageNo - 1
+    }));
+  };
+
   render() {
-    const {imageLink, serialNo, name} = this.props.gallery;
+    const {gallery}          = this.props;
+    const {serialNo, name}   = gallery;
+    const {imageNo, picLink} = this.state;
+    const coverImage         = `https://i.hentaifox.com${picLink}/${imageNo}t.jpg`;
 
     return (
         <Figure>
           <ItemCover>
             <a href={`https://hentaifox.com/gallery/${serialNo}/`}>
               <Img
-                  src={'http://' + imageLink}
+                  src={coverImage}
                   // src={'https://i.hentaifox.com/002/1139352/thumb.jpg'}
                   alt={name}/>
             </a>
           </ItemCover>
+          <PrevImage onClick={() => {this.prevImage();}}></PrevImage>
+          <NextImage onClick={() => {this.nextImage();}}></NextImage>
         </Figure>
     );
   }

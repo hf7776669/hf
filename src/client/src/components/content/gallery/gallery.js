@@ -36,7 +36,6 @@ class Gallery extends Component {
   }
 
   getPosition() {
-    console.log(`this.refs`, this.refs.targetDiv);
     const node = this.refs.targetDiv;
     var specs  = node.getBoundingClientRect();
 
@@ -46,14 +45,13 @@ class Gallery extends Component {
         height: window.innerHeight
       },
       xPos  : Math.floor(specs.x),
-      yPos  : Math.floor(specs.y)
     }));
   }
 
   render() {
     const {gallery, getArtistGalleries, filterGalleries} = this.props;
 
-    const {window, xPos, yPos} = this.state;
+    const {window, xPos} = this.state;
 
     const detailsPosition = (window.width - xPos - 240 - 280) > 0
         ? 'right'
