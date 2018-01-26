@@ -4,36 +4,30 @@
 */
 
 import React, {Component} from 'react';
-import styled from 'styled-components';
 import Figure from './figure';
 import Caption from './caption';
 import Details from './details';
 
-const Wrapper = styled.div`
-  &&& {text-align: left;
-  width:17%;
-  min-width: 200px;
-  margin: 15px 7px;
-  padding: 0;
-  position: relative;
-  vertical-align: top;
-  display: inline-block;}
-`;
+import {Wrapper} from './gallery-styles';
 
 class Gallery extends Component {
   constructor(props) {
     super(props);
-    this.showDetails    = this.showDetails.bind(this);
-    this.hideDetails    = this.hideDetails.bind(this);
-    this.getCoordinates = this.getCoordinates.bind(this);
-    this.state          = {
+    this.showDetails = this.showDetails.bind(this);
+    this.hideDetails = this.hideDetails.bind(this);
+    this.getPosition = this.getPosition.bind(this);
+    this.state       = {
       isHovering : false,
-      showDetails: false
+      showDetails: false,
+      window     : {
+        width : null,
+        height: null
+      }
     };
   }
 
   showDetails() {
-    this.getCoordinates();
+    this.getPosition();
     this.setState(() => ({isHovering: true}));
   }
 
@@ -41,28 +35,41 @@ class Gallery extends Component {
     this.setState(() => ({isHovering: false}));
   }
 
-  getCoordinates() {
-    console.log(`this.refs`, this.refs.targetDiv);
+  getPosition() {
     const node = this.refs.targetDiv;
     var specs  = node.getBoundingClientRect();
-//    console.log('specs: ', specs);
-//    console.log('window: ', window.innerWidth + 'x' + window.innerHeight);
+
+    this.setState(() => ({
+      window: {
+        width : window.innerWidth,
+        height: window.innerHeight
+      },
+      xPos  : Math.floor(specs.x)
+    }));
   }
 
   render() {
-    const {gallery, getArtistGalleries} = this.props;
+    const {gallery, getArtistGalleries, filterGalleries} = this.props;
+
+    const {window, xPos} = this.state;
+
+    const detailsPosition = (window.width - xPos - 240 - 280) > 0
+        ? 'right'
+        : 'left';
+
     return (
-
-        <Wrapper
-            onMouseEnter={this.showDetails}
-            onMouseLeave={this.hideDetails}>
-          <div ref='targetDiv'>
-
+        <Wrapper>
+          <div ref='targetDiv' onMouseEnter={this.showDetails}
+               onMouseLeave={this.hideDetails}>
             <Figure gallery={gallery}/>
-            <Caption gallery={gallery}/>
+            {this.state.isHovering &&
+            <Details gallery={gallery}
+                     getArtistGalleries={getArtistGalleries}
+                     filterGalleries={filterGalleries}
+                     position={detailsPosition}
+            />}
           </div>
-          {this.state.isHovering &&
-          <Details gallery={gallery} getArtistGalleries={getArtistGalleries}/>}
+          <Caption gallery={gallery}/>
         </Wrapper>
     );
   }

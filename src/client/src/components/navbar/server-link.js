@@ -37,7 +37,6 @@ class ServerLink extends Component {
         .then(() => {
           console.log('updated gallerieis');
         });
-
   };
 
 
@@ -49,6 +48,6 @@ class ServerLink extends Component {
         </Li>
     );
   }
-};
+}
 
 export default ServerLink;

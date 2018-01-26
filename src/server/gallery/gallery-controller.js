@@ -2,32 +2,28 @@
 * Goal 
 *   a. Create controllers for Gallery routes
 *   
+* NOTABLE FEATURES 
+*   - Async Await
+*   
 */
 
 import fetchNewGalleries from './hf/update-new-galleries';
 import getLatestDBGallery from './db-ops/get-latest-gallery';
 import Gallery from './gallery-model';
+import Artist from '../artist/artist-model';
 import config from '../config/';
 
 const {pageSize} = config.pagination;
 
-const fetchGallery = (req, res) => {
-
+const fetchGallery = async (req, res) => {
   const {serialNo} = req.params;
 
-  return Gallery
-      .find({serialNo})
-      .then((results) => {
-        console.log(`results: `, results);
-        res.send(results);
-      })
-      .catch((err) => {
-        console.log(`\nError when fetching gallery from database\n`, err);
-        return new Error(err);
-      });
+  const gallery = await Gallery.find({serialNo});
+
+  res.send(gallery);
 };
 
-const updateGallery = (req, res) => {
+const updateGallery = async (req, res) => {
   const {serialNo} = req.params;
 
   const {priority, read, downloaded, rating, series, ignore, ignoreReason} = req.body;
@@ -43,68 +39,109 @@ const updateGallery = (req, res) => {
   (ignore !== undefined) && (updateObject.ignore = ignore);
   (ignoreReason !== undefined) && (updateObject.ignoreReason = ignoreReason);
 
-  let result;
+  let queryObject = {};
 
   if (Object.keys(pushObject).length * Object.keys(updateObject)) {
-    result = Gallery.update({serialNo},
-        {$set: updateObject, $addToSet: pushObject});
+    queryObject = {$set: updateObject, $addToSet: pushObject};
   } else {
     if (Object.keys(pushObject).length) {
-      result = Gallery.update({serialNo}, {$addToSet: pushObject});
-
+      queryObject = {$addToSet: pushObject};
     } else if (Object.keys(updateObject).length) {
-      result = Gallery.update({serialNo}, {$set: updateObject});
+      queryObject = {$set: updateObject};
     }
   }
 
-  return result
-      .then(_ => res.send('Ignore update successful'))
-      .catch(_ => {
-        console.log('Error in updating gallery: ', pushObject, updateObject);
-        res.send('Update failed');
-      });
+  await Gallery.update({serialNo}, queryObject);
+
+  res.send({msg: 'Update successful'});
 };
 
-const fetchGalleries = (req, res) => {
+const fetchGalleries = async (req, res) => {
   console.log(`Getting galleries`);
-  const {page = 1} = req.query;
-  return Gallery
+  const {page = 1, cleaned} = req.query;
+
+  const galleries = await Gallery
       .find({ignore: {$ne: true}})
       .sort({serialNo: -1})
       .skip((page - 1) * pageSize)
-      .limit(pageSize)
-      .then((results) => res.send(results))
-      .catch(err => {
-        console.log(`Error while fetching galleries from mongodb\n`, err);
-        return new Error(err);
-      });
+      .limit(pageSize);
+
+  const filteredGalleries = await filterGalleries(galleries, cleaned);
+
+  res.send(filteredGalleries);
 };
 
-const getLatest = (req, res) => {
-  console.log(`latest`);
-  return getLatestDBGallery()
-      .then(result => res.json(result[0].serialNo));
+const getLatest = async (req, res) => {
+  const result = await getLatestDBGallery();
+
+  res.json(result[0].serialNo);
 };
 
-const download = (req, res) => {
+const download = async (req, res) => {
   let {serialNo} = req.params;
   //TODO: Download logic for the gallery  
 };
 
-const updateDb = (req, res) => {
+const updateDb = async (req, res) => {
   //TODO: redirect with latest gallery view
   //TODO: send updated data back to client 
   //TODO: Client's axios library will use received data to update state
 
-  return fetchNewGalleries()
-      .then((data) => {
-//        console.log('data in updateNewGalleries: ', data);
-        res.send(data);
-      })
-      .catch(err => console.log(err));
+  const data = await fetchNewGalleries();
+  res.send(data);
 };
 
 export default {
   download, updateDb, fetchGallery, fetchGalleries, getLatest, updateGallery
 };
-  
+
+//filterGalleries
+async function filterGalleries(galleries, cleaned) {
+  const galleryPromises    = galleries.map(gallery =>
+      getGalleryStatus(gallery)
+          .then(status => {
+            console.log(`computed status: `, status);
+
+            const result = ({
+              ...JSON.parse(JSON.stringify(gallery)), ...status
+            });
+
+            console.log(
+                `\nresult: ignore: ${result.ignore}, cleaned: ${result.cleaned}`);
+            return result;
+          })
+  );
+  const completedGalleries = await Promise.all(galleryPromises);
+
+  return completedGalleries.filter(
+      gallery => !(gallery.ignore ||
+          (gallery.cleaned && (cleaned === 'hide'))));
+}
+
+async function getGalleryStatus(gallery) {
+  let result = {};
+  if (gallery.artists.length) {
+    const artistPromises = gallery.artists.map(
+        artistName => Artist
+            .findOne({name: artistName})
+            .then(({ignore, cleaned}) => ({ignore, cleaned})));
+
+    const artists = await Promise.all(artistPromises);
+
+    artists.map(({ignore, cleaned}) => console.log(
+        `artist ignore: ${ignore}, cleaned: ${cleaned}`));
+
+    result = artists.reduce((acc, currentValue) => {
+      return ({
+        ignore : !!(acc.ignore && currentValue.ignore),
+        cleaned: !!(acc.cleaned * currentValue.cleaned)
+      });
+    }, {ignore: 1, cleaned: 1});
+  } else {
+    // No artists tagged to the gallery
+    // Return default false values for the gallery
+    result = {ignore: false, cleaned: false};
+  }
+
+  return result;
+}

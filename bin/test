@@ -1,5 +1,8 @@
 require('babel-register')({
-  presets: ['env', 'react', 'stage-0']
+  presets: [
+    'react', 'stage-0',
+    ['env', {'targets': {'node': 'current'}}]
+  ]
 });
 
-require('../temp/test5');
+require('../temp/test6');

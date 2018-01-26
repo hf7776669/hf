@@ -25,15 +25,18 @@ let mongoLink;
 switch (process.env.DB) {
   case 'local':
     mongoLink = config.localMongo;
-    break;
+    break; 
   case 'test':
     mongoLink = config.testMongoConnection;
     break;
   case 'server':
     mongoLink = config.mongoConnection;
     break;
+  case 'prod':
+    mongoLink = config.prodMongo;
+    break;
   default:
-    mongoLink = config.localMongo;
+    mongoLink = config.localMongo; 
 }
 
 console.log(`mongoLink`, mongoLink);
@@ -49,7 +52,7 @@ const options = {
 };
 
 db.once('open', () => {
-  console.log(`\nConnected to ${mongoLink}`); 
+  console.log(`\nConnected to ${mongoLink}`);
   spdy
       .createServer(options, app)
       .listen(config.port, (err) => {
@@ -59,11 +62,14 @@ db.once('open', () => {
         }
         console.log(`\nListening on port ${config.port}`);
       })
-      .listen(6001, '0.0.0.0', (err) => {
-        console.log('listening on local network');
-      });
+  /*.listen(6001, '0.0.0.0', (err) => {
+    console.log('listening on local network');
+  });*/
 });
 
 db.on('error', (err) => {
   console.error(`\n\nError in connecting to the mongo server: \n\n`, err);
 });
+
+
+//Some random change to push up

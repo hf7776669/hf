@@ -9,28 +9,22 @@
 import Gallery from '../gallery/gallery-model';
 import Artist from '../artist/artist-model';
 
-const fetchArtist = (req, res) => {
+const fetchArtist = async (req, res) => {
   const {artistName} = req.params;
   console.log(`artistName: `, artistName);
-  return Artist
-      .findOne({name: artistName})
-      .then(({galleries}) => {
-        const galleryPromises = galleries.map(
-            serialNo => Gallery.findOne({serialNo}));
 
-        return Promise.all(galleryPromises);
-      })
-      .then(results => {
-        // filter ignored galleries
-        res.send(results.filter(result => !result.ignore));
-      })
-      .catch(err => {
-        console.log(`Error while fetching artists from mongodb\n`, err);
-        return new Error(err);
-      });
+  const artist = await Artist
+      .findOne({name: artistName});
+
+  const galleryPromises = artist.galleries.map(
+      serialNo => Gallery.findOne({serialNo}));
+
+  let galleries = await Promise.all(galleryPromises);
+
+  res.send(galleries.filter(gallery => !gallery.ignore));
 };
 
-const updateArtist = (req, res) => {
+const updateArtist = async (req, res) => {
   const {artistName} = req.params;
   console.log(`request body: `, req.body);
   const {track, read, ignore, ignoreReason, priority, cleaned, observations} = req.body;
@@ -45,13 +39,17 @@ const updateArtist = (req, res) => {
   (cleaned !== undefined) && (updateObject.cleaned = cleaned);
   (observations !== undefined) && (updateObject.observations = observations);
 
-  return Artist
-      .findOneAndUpdate({name: artistName}, {$set: updateObject})
-      .then(_ => res.send(`${artistName} update successful`))
-      .catch(_ => {
-        console.log(`error in ignoring artist ${artistName}: `, _);
-        res.send(`${Object.keys(updateObject)} update failed`);
-      });
+  console.log(artistName);
+  console.log(`updateObject`, updateObject);
+
+  await Artist.findOneAndUpdate({name: artistName},
+      {$set: updateObject});
+
+  if (ignore === true) await Gallery.update({artists: artistName},
+      {$set: updateObject}, {multi: true});
+
+
+  res.send(`${artistName} update successful`);
 };
 
 export default {fetchArtist, updateArtist};

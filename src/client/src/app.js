@@ -9,10 +9,6 @@ const Wrapper = styled.div`
   font-size: 12px}
 `;
 
-const Break = styled.div`
-  height:30px;
-`;
-
 const App = () => (
     <Wrapper>
       {/*<Navbar/>*/}
