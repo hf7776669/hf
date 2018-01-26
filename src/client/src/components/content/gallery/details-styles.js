@@ -50,7 +50,7 @@ const P = styled.p`
   font-style: italic;
 `;
 
-const Tags = styled.ul`
+const Ul = styled.ul`
   display: flex;
   list-style: square;
   justify-content: space-between;
@@ -60,7 +60,7 @@ const Tags = styled.ul`
   margin: 0 5px;
 `;
 
-const Artists = Tags.extend`
+const Artists = Ul.extend`
   cursor: pointer;
 `;
 
@@ -87,19 +87,20 @@ const Li = styled.li`
   margin: 0 0 0 10px;
   list-style-position: inside;
   cursor: pointer;
+  font-size: 14px;
 `;
 
 const LiGood = Li.extend`
   color: green;
   font-weight: bold;
+  font-style: italic;
 `;
 
 const LiBad = Li.extend`
   color: red; 
-`;
-
+`; 
 
 export {
-  ContainerLeft, ContainerRight, LiItem, Name, P, Tags,
+  ContainerLeft, ContainerRight, LiItem, Name, P, Ul,
   Artists, Item, Button, Li, LiGood, LiBad
 };
