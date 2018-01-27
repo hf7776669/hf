@@ -4,13 +4,26 @@
 *   - decoded HTML special chars in Cheerio o/p using he.js 
 */
 
+import axios from 'axios';
 import React from 'react';
 import he from 'he';
-import {A, DivStatus, StatusSpan} from '../caption-styles';
+import {A, Button, DivIgnore} from '../caption-styles';
 
 class GalleryCaption extends React.Component {
+  ignoreGallery(serialNo) {
+    return axios.post(`/api/galleries/${serialNo}`, {ignore: true})
+        .then(({data}) => {
+          const {msg} = data;
+          if (msg === 'Update successful') {
+            console.log(`Gallery ${serialNo} Ignored`);
+          } else {console.log(`Gallery ${serialNo} could not be ignored`);}
+        });
+  }
+
   render() {
-    const {gallery} = this.props;
+    const {gallery}  = this.props;
+    const {serialNo} = gallery;
+    
     return (
         <div className="caption">
           <h6>
@@ -19,16 +32,18 @@ class GalleryCaption extends React.Component {
             </A>
           </h6>
           <div>
-            <span style={{float: 'left'}}>
-              {gallery.pages} Pages
-            </span>
-            <span style={{float: 'right'}}>
-              {gallery.author}
-            </span>
-          </div>
-          <DivStatus>
-            <StatusSpan>hot</StatusSpan>
-          </DivStatus>
+            <div>
+              <span style={{float: 'left'}}>
+                {gallery.pages} Pages
+              </span>
+              <span style={{float: 'right'}}>
+                {gallery.author}
+              </span>
+            </div>
+            <DivIgnore>
+              <Button
+                  onClick={() => this.ignoreGallery(serialNo)}>Ignore</Button>
+            </DivIgnore></div>
         </div>
     );
   }
