@@ -10,6 +10,7 @@
     "react-app-rewired"                 : "^1.4.0",
     "react-dom"                         : "^16.2.0",
     "react-icons"                       : "^2.2.7",
+    "react-lazyload"                    : "^2.3.0",
     "react-scripts"                     : "1.0.17",
     "reactstrap"                        : "^5.0.0-alpha.4",
     "styled-components"                 : "^2.3.0"
