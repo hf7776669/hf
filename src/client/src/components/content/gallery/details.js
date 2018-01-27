@@ -1,11 +1,10 @@
 import React, {Component, Fragment} from 'react';
 import he from 'he';
-import axios from 'axios';
 import {badTags, goodTags} from '../../../config';
 
 import {
-  Artists, Button, ContainerLeft, ContainerRight, Item, Li, LiBad, LiGood,
-  LiItem, Name, P, Ul
+  Artists, ContainerLeft, ContainerRight, Item, Li, LiBad, LiGood, LiItem,
+  Name, P, Ul
 } from './details-styles';
 
 const A = ({filterGalleries, children, filter}) => (
@@ -44,17 +43,6 @@ class Details extends Component {
       );
     }
   }
-
-  ignoreGallery(serialNo) {
-    return axios.post(`/api/galleries/${serialNo}`, {ignore: true})
-        .then(({data}) => {
-          const {msg} = data;
-          if (msg === 'Update successful') {
-            console.log(`Gallery ${serialNo} Ignored`);
-          } else {console.log(`Gallery ${serialNo} could not be ignored`);}
-        });
-  }
-
 
   render() {
     const {name, link, tags, pages, serialNo, artists, parodies} = this.props.gallery;
@@ -97,7 +85,6 @@ class Details extends Component {
             )}
 
             <LiItem>Download</LiItem>
-            <Button onClick={() => this.ignoreGallery(serialNo)}>Ignore</Button>
             <LiItem>Series</LiItem>
 
             {!artists.length ? '' : (
@@ -112,7 +99,7 @@ class Details extends Component {
                   </Artists>
                 </Fragment>
             )}
-            
+
             <LiItem>Priority</LiItem>
             <LiItem>Category</LiItem>
 
