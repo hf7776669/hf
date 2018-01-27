@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-const DivStatus = styled.div`
+const DivIgnore = styled.div`
   &&& {position: absolute;
-  bottom:54px;
+  
   right: 0;
   z-index: 100;}
 `;
 
-const StatusSpan = styled.span`
+const Button = styled.span`
   &&& {padding:4px;
   background: red;
   border-radius: 2px;
@@ -16,6 +16,7 @@ const StatusSpan = styled.span`
   min-width: 38px;
   font-size: 12px;
   color: white;}
+  cursor: pointer;
 `;
 
 const A = styled.a`
@@ -26,4 +27,4 @@ const A = styled.a`
   }}
 `;
 
-export {StatusSpan, A, DivStatus};
+export {Button, A, DivIgnore};
