@@ -11,7 +11,7 @@ import fetchNewGalleries from './hf/update-new-galleries';
 import getLatestDBGallery from './db-ops/get-latest-gallery';
 import Gallery from './gallery-model';
 import Artist from '../artist/artist-model';
-import config from '../config/';
+import config from '../config';
 
 const {pageSize} = config.pagination;
 
@@ -78,7 +78,7 @@ const getLatest = async (req, res) => {
 };
 
 const download = async (req, res) => {
-  let {serialNo} = req.params;
+//  let {serialNo} = req.params;
   //TODO: Download logic for the gallery  
 };
 
@@ -97,25 +97,20 @@ export default {
 
 //filterGalleries
 async function filterGalleries(galleries, cleaned) {
-  const galleryPromises    = galleries.map(gallery =>
-      getGalleryStatus(gallery)
-          .then(status => {
-            console.log(`computed status: `, status);
-
-            const result = ({
-              ...JSON.parse(JSON.stringify(gallery)), ...status
-            });
-
-            console.log(
-                `\nresult: ignore: ${result.ignore}, cleaned: ${result.cleaned}`);
-            return result;
-          })
+  const galleryPromises = galleries.map(
+      gallery => getGalleryStatus(gallery)
+          .then(status => ({
+                ...JSON.parse(JSON.stringify(gallery)), ...status
+              })
+          )
   );
+
   const completedGalleries = await Promise.all(galleryPromises);
 
   return completedGalleries.filter(
       gallery => !(gallery.ignore ||
-          (gallery.cleaned && (cleaned === 'hide'))));
+          (gallery.cleaned && (cleaned === 'hide')))
+  );
 }
 
 async function getGalleryStatus(gallery) {
