@@ -11,7 +11,6 @@ import Artist from '../artist/artist-model';
 
 const fetchArtist = async (req, res) => {
   const {artistName} = req.params;
-  console.log(`artistName: `, artistName);
 
   const artist = await Artist
       .findOne({name: artistName});
