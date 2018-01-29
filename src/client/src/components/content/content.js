@@ -128,7 +128,6 @@ class Content extends React.Component {
     const {galleries, strFilter, page, artistView, artistName, hideCleanArtist} = this.state;
     return (
         <div>
-
           <Search>
             <Pagination activePage={page} fetchPage={this.getPage}/>
             <input onChange={(e) => this.filterInput(e)}
@@ -151,41 +150,42 @@ class Content extends React.Component {
             {(!artistView && !hideCleanArtist) &&
             <button onClick={() => this.filterCleanArtists()}>Hide
               Clean</button>}
-
           </Search>
           <ContentBody>
-            {galleries && galleries.length ? galleries.filter(
-                (gallery) => {
-                  if (!strFilter) {return 1;}
+            {!(galleries && galleries.length)
+                ? 'Loading'
+                : galleries.filter(
+                    (gallery) => {
+                      if (!strFilter) {return 1;}
 
-                  const nameFound = gallery.name.toLowerCase()
-                      .includes(strFilter.toLowerCase());
+                      const nameFound = gallery.name.toLowerCase()
+                          .includes(strFilter.toLowerCase());
 
-                  if (nameFound) return 1;
+                      if (nameFound) return 1;
 
-                  const tagsMatched = gallery.tags.filter(
-                      tag => tag.toLowerCase()
-                          .includes(strFilter.toLowerCase()));
+                      const tagsMatched = gallery.tags.filter(
+                          tag => tag.toLowerCase()
+                              .includes(strFilter.toLowerCase()));
 
-                  if (tagsMatched.length) return tagsMatched.length;
+                      if (tagsMatched.length) return tagsMatched.length;
 
-                  const parodiesMatched = gallery.parodies.filter(
-                      parody => parody.toLowerCase()
-                          .includes(strFilter.toLowerCase()));
+                      const parodiesMatched = gallery.parodies.filter(
+                          parody => parody.toLowerCase()
+                              .includes(strFilter.toLowerCase()));
 
-                  if (parodiesMatched.length) return parodiesMatched.length;
+                      if (parodiesMatched.length) return parodiesMatched.length;
 
-                  return 0;
-                })
-                .map(
-                    gallery => (
-                        <Gallery key={gallery.serialNo}
-                                 gallery={gallery}
-                                 getArtistGalleries={this.getArtistGalleries}
-                                 filterGalleries={this.filterGalleries}>
-                        </Gallery>
+                      return 0;
+                    })
+                    .map(
+                        gallery => (
+                            <Gallery key={gallery.serialNo}
+                                     gallery={gallery}
+                                     getArtistGalleries={this.getArtistGalleries}
+                                     filterGalleries={this.filterGalleries}>
+                            </Gallery>
+                        )
                     )
-                ) : 'Loading'
             }
           </ContentBody>
 

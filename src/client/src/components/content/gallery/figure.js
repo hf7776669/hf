@@ -5,6 +5,7 @@
 
 import React from 'react';
 import {Figure, Img, ItemCover, NextImage, PrevImage} from './figure-styles';
+import LazyLoad from 'react-lazyload';
 
 class GalleryFigure extends React.Component {
 
@@ -52,10 +53,11 @@ class GalleryFigure extends React.Component {
         <Figure>
           <ItemCover>
             <a href={`https://hentaifox.com/gallery/${serialNo}/`}>
-              <Img
-                  src={coverImage}
-                  // src={'https://i.hentaifox.com/002/1139352/thumb.jpg'}
-                  alt={name}/>
+              <LazyLoad once height={350}>
+                <Img src={coverImage}
+                    // src={'https://i.hentaifox.com/002/1139352/thumb.jpg'}
+                     alt={name}/>
+              </LazyLoad>
             </a>
           </ItemCover>
           <PrevImage onClick={() => {this.prevImage();}}></PrevImage>
