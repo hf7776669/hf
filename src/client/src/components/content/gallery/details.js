@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import he from 'he';
-import {badTags, goodTags} from '../../../config';
+import {badTags, goodTags} from '../../../config/tags';
 
 import {
   Artists, ContainerLeft, ContainerRight, Item, Li, LiBad, LiGood, LiItem,
