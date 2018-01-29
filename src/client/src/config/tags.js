@@ -12,7 +12,7 @@ const badTags = [
   'spider-girl', 'minotaur', 'cannibalism', 'pig-man', 'necrophilia',
   'octopus', 'furry', 'eye-penetration', 'frog', 'low-bestiality',
   'grandmother', 'monkey', 'pig-girl', 'full-censorship', 'chloroform',
-  '', '', '', '', '', '',
+  'mosaic-censorship', '', '', '', '', '',
   '', '', '', '', '', '', '', '', '', '', '', ''
 ];
 
