@@ -30,8 +30,8 @@ const LiItem = styled.li`
   ${hoverColor}
 `;
 
-const Name = styled.h4`
-  font-size: 18px;
+const Name = styled.h5`
+  font-size: 16px;
   ${hoverColor};
   cursor: pointer ;
   
@@ -87,18 +87,20 @@ const Li = styled.li`
   margin: 0 0 0 10px;
   list-style-position: inside;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
 `;
 
 const LiGood = Li.extend`
   color: green;
   font-weight: bold;
   font-style: italic;
+  font-size: 13px;
 `;
 
 const LiBad = Li.extend`
+  font-size: 13px;
   color: red; 
-`; 
+`;
 
 export {
   ContainerLeft, ContainerRight, LiItem, Name, P, Ul,
