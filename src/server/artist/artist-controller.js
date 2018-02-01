@@ -8,6 +8,9 @@
 
 import Gallery from '../gallery/gallery-model';
 import Artist from '../artist/artist-model';
+import config from '../config';
+
+const {pageSize} = config.pagination;
 
 const fetchArtist = async (req, res) => {
   const {artistName} = req.params;
@@ -47,8 +50,41 @@ const updateArtist = async (req, res) => {
   if (ignore === true) await Gallery.update({artists: artistName},
       {$set: updateObject}, {multi: true});
 
-
   res.send(`${artistName} update successful`);
 };
 
-export default {fetchArtist, updateArtist};
+const listArtists = async (req, res) => {
+
+  const {page = 1} = req.query;
+
+  const query = [
+    {$match: {'ignore': false}},
+    {$addFields: {count: {$size: '$galleries'}}},
+    {$sort: {count: -1}}
+  ];
+
+  query.push(
+      {
+        $group: {
+          _id    : null,
+          count  : {$sum: 1},
+          results: {$push: '$$ROOT'}
+        }
+      },
+      {
+        $project: {
+          count: 1,
+          rows : {$slice: ['$results', (page - 1) * pageSize, page * pageSize]}
+        }
+      });
+
+//  const artists = await Artist.aggregate(
+//      [{$addFields: {count: {$size: '$galleries'}}}, {$sort: {count: -1}}]);
+
+  const artists = await Artist.aggregate(query);
+  console.log(`results Count: `, artists.length);
+
+  res.send(artists);
+};
+
+export default {fetchArtist, updateArtist, listArtists};

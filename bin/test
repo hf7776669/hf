@@ -5,4 +5,5 @@ require('babel-register')({
   ]
 });
 
-require('../temp/test6');
+require('../temp/test7');
+
