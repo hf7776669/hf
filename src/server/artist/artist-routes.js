@@ -17,4 +17,7 @@ Router.route('/:artistName')
     .get(artistController.fetchArtist)
     .post(artistController.updateArtist);
 
+Router.route('/')
+    .get(artistController.listArtists);
+
 export default Router;  
