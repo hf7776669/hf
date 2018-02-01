@@ -22,7 +22,7 @@ class Details extends Component {
       return (
           <LiBad key={tag}>
             <A filter={tag} filterGalleries={filterGalleries}>
-              <s>{tag}</s>
+              {tag}
             </A>
           </LiBad>
       );
@@ -45,7 +45,7 @@ class Details extends Component {
   }
 
   render() {
-    const {name, link, tags, pages, serialNo, artists, parodies} = this.props.gallery;
+    const {name, link, tags, pages, serialNo, artists, parodies, groups} = this.props.gallery;
 
     const {getArtistGalleries, filterGalleries, position} = this.props;
 
@@ -62,6 +62,19 @@ class Details extends Component {
           <ul style={{padding: '10px'}}>
             <Name><a href={link}>{he.decode(name)}</a></Name>
             <P style={{fontSize: '10px'}}><b>{pages} pages</b></P>
+
+            {!artists.length ? '' : (
+                <Fragment>
+                  <Item>Artists:</Item>
+                  <Artists>
+                    {artists && artists.map(artist => (
+                        <Li key={artist}>
+                          <a onClick={() => getArtistGalleries(
+                              artist)}>{artist}</a></Li>
+                    ))}
+                  </Artists>
+                </Fragment>
+            )}
 
             {!tags.length ? '' : (
                 <Fragment>
@@ -84,21 +97,23 @@ class Details extends Component {
                 </Fragment>
             )}
 
+            {!groups.length ? '' : (
+                <Fragment>
+                  <Item>Groups:</Item>
+                  {groups.map(group => (
+                      <Li key={group}>
+                        <A filter={group}
+                           filterGalleries={filterGalleries}>
+                          {group}
+                        </A>
+                      </Li>
+                  ))}
+                </Fragment>
+            )}
+
             <LiItem>Download</LiItem>
             <LiItem>Series</LiItem>
 
-            {!artists.length ? '' : (
-                <Fragment>
-                  <Item>Artists:</Item>
-                  <Artists>
-                    {artists && artists.map(artist => (
-                        <Li key={artist}>
-                          <a onClick={() => getArtistGalleries(
-                              artist)}>{artist}</a></Li>
-                    ))}
-                  </Artists>
-                </Fragment>
-            )}
 
             <LiItem>Priority</LiItem>
             <LiItem>Category</LiItem>
