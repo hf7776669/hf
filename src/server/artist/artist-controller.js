@@ -58,28 +58,25 @@ const listArtists = async (req, res) => {
   const {page = 1} = req.query;
 
   const query = [
-    {$match: {'ignore': false}},
-    {$addFields: {count: {$size: '$galleries'}}},
-    {$sort: {count: -1}}
+    {$match: {$or: [{'ignore': false}, {ignore: {$exists: false}}]}},
+    {$addFields: {galleryCount: {$size: '$galleries'}}},
+    {$sort: {galleryCount: -1, name: 1}}
   ];
 
   query.push(
       {
         $group: {
-          _id    : null,
-          count  : {$sum: 1},
-          results: {$push: '$$ROOT'}
+          _id: null, artistCount: {$sum: 1}, results: {$push: '$$ROOT'}
         }
       },
       {
         $project: {
-          count: 1,
-          rows : {$slice: ['$results', (page - 1) * pageSize, page * pageSize]}
+          artistCount: 1,
+          rows       : {
+            $slice: ['$results', (page - 1) * pageSize, page * pageSize]
+          }
         }
       });
-
-//  const artists = await Artist.aggregate(
-//      [{$addFields: {count: {$size: '$galleries'}}}, {$sort: {count: -1}}]);
 
   const artists = await Artist.aggregate(query);
   console.log(`results Count: `, artists.length);
