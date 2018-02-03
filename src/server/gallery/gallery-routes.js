@@ -23,11 +23,11 @@ Router
     .get(galleryController.getLatest);
 
 Router
-    .route('/download/:serialNo')
+    .route('/download/:_id')
     .get(galleryController.download);
 
 Router
-    .route('/:serialNo')
+    .route('/:_id')
     .get(galleryController.fetchGallery)
     .post(galleryController.updateGallery);
 

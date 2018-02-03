@@ -5,10 +5,12 @@
 * NOTABLE FEATURES
 *   1. Mongoose Schema and field definitions
 *   2. Collection named defined (not plurified named as per Mongoose defaults)
+*   3. Ref for population of gallery objects in future queries
 */
 
 const mongoose     = require('mongoose');
 const Schema       = require('mongoose').Schema;
+const Gallery      = require('../gallery/gallery-model');
 const artistSchema = Schema({
   name         : {type: String, required: true},
   /*
@@ -31,9 +33,9 @@ const artistSchema = Schema({
   priority     : {type: Number, default: 5, required: true},
   observations : {type: String},
   /*
-  * Contains gallerySerialNos as these are unique 
+  * Contains gallery ids as these are unique 
   */
-  galleries    : {type: Array, required: true},
+  galleries    : [{type: Schema.Types.String, ref: 'Gallery'}],
   cleaned      : {type: Boolean, default: false},
   cleanedBefore: {type: Boolean, default: false}
 });

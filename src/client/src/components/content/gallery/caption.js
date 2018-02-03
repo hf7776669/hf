@@ -10,39 +10,31 @@ import he from 'he';
 import {A, Button, DivIgnore} from '../caption-styles';
 
 class GalleryCaption extends React.Component {
-  ignoreGallery(serialNo) {
-    return axios.post(`/api/galleries/${serialNo}`, {ignore: true})
+  ignoreGallery(_id) {
+    return axios.post(`/api/galleries/${_id}`, {ignore: true})
         .then(({data}) => {
           const {msg} = data;
           if (msg === 'Update successful') {
-            console.log(`Gallery ${serialNo} Ignored`);
-          } else {console.log(`Gallery ${serialNo} could not be ignored`);}
+            console.log(`Gallery ${_id} Ignored`);
+          } else {console.log(`Gallery ${_id} could not be ignored`);}
         });
   }
 
   render() {
-    const {gallery}  = this.props;
-    const {serialNo} = gallery;
-    
+    const {_id, link, name, pages, author} = this.props.gallery;
+
     return (
         <div className="caption">
-          <h6>
-            <A href={gallery.link}>
-              {he.decode(gallery.name)}
-            </A>
-          </h6>
+          <h6><A href={link}>{he.decode(name)}</A></h6>
           <div>
             <div>
-              <span style={{float: 'left'}}>
-                {gallery.pages} Pages
-              </span>
-              <span style={{float: 'right'}}>
-                {gallery.author}
-              </span>
+              <span style={{float: 'left'}}>{pages} Pages</span>
+              <span style={{float: 'right'}}>{author}</span>
             </div>
             <DivIgnore>
-              <Button
-                  onClick={() => this.ignoreGallery(serialNo)}>Ignore</Button>
+              <Button onClick={() => this.ignoreGallery(_id)}>
+                Ignore
+              </Button>
             </DivIgnore></div>
         </div>
     );

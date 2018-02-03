@@ -19,7 +19,7 @@ const fetchArtist = async (req, res) => {
       .findOne({name: artistName});
 
   const galleryPromises = artist.galleries.map(
-      serialNo => Gallery.findOne({serialNo}));
+      _id => Gallery.findOne({_id}));
 
   let galleries = await Promise.all(galleryPromises);
 

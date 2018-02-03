@@ -3,12 +3,12 @@
 *   a. To return latest updated gallery in database
 * 
 * Output:
-*   - gallery object for latest serialNo;
+*   - gallery object for latest _id;
 */
 
 import gallery from '../gallery-model';
 
 export default () => gallery
     .find()
-    .sort({serialNo: -1})
+    .sort({_id: -1})
     .limit(1);
