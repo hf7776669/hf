@@ -6,7 +6,7 @@ const mongoose      = require('mongoose');
 const Schema        = require('mongoose').Schema;
 const gallerySchema = new Schema({
   name        : {type: String, required: true},
-  serialNo    : {type: String, required: true},
+  _id         : {type: String, required: true, unique: true},
   tags        : {type: Array},
   priority    : {type: Number, default: 5},
   artists     : {type: Array},

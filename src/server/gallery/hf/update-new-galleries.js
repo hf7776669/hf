@@ -1,17 +1,12 @@
 /*
-* Goal - fetch new galleries from hf, update artist collections and return
-* latest galleries to client
+* Goal - fetch new galleries from hf, update artist collections 
 * 
 * NOTABLE FEATURES
 *   - axios request headers
-*   - bluebird Promise.mapSeries for sequential execution of promises 
+*   - batches of 20 galleries updated at at time
+*   - bluebird Promise.mapSeries for sequential fetching of gallery details 
 *     - mapSeries takes an array which is mapped to a promise returning
- *     function which is to be executed sequentially over each value
-*  
-*  REFACTOR NEEDED
-*   - processHFPage should return only a serial number of latest hf gallery
-*     - no need for destructuring to get serial number of first array object 
-*     - rename processHFPage suitably
+*       function which is to be executed sequentially over each value
 */
 
 import axios from 'axios';
@@ -23,52 +18,65 @@ import bulkInsertGalleries from '../db-ops/bulk-insert-galleries';
 import updateArtist from '../../artist/db-ops/artist-add-gallery';
 import config from '../../config';
 
-let lastFetchedGalleryDB;
-
-const updateNewGalleries = () => {
+const updateNewGalleries = async () => {
   console.log('Processing new galleries');
-  return getLatestGalleryDB()
-      .then(([{serialNo}]) => {lastFetchedGalleryDB = serialNo;})
-      .then(_ => axios.get(config.hfAddress, config.requestHeaders))
-      .then(page => processHFPage(page))
-      //      Latest Gallery is first Array object's serial Number
-      .then(([{serialNo: latestGallery}]) => {
-        // const latestGallery = galleries[0].serialNo;
-        console.log(
-            `Fetching Galleries ${lastFetchedGalleryDB} - ${latestGallery}`);
 
-        /*
-        * Required because mapSeries API requires an array of values which
-        * are individually passed to a function returning promise for that value  
-        */
-        const galleriesToFetch = [];
-        if (latestGallery > lastFetchedGalleryDB) {
-          let i = ++lastFetchedGalleryDB, ii = latestGallery;
-          for (; i <= ii; i++) {
-            galleriesToFetch.push((i + '').padStart(6, 0));
-          }
-        }
-        return galleriesToFetch;
-      })
-      .then(galleries =>
-          Promise.mapSeries(
-              galleries,
-              gallery => fetchGalleryDetails(gallery)
-          )
-      )
-      .catch(err => console.log(`Error in fetching gallery details`, err))
-      .then(updateDatabase)
-      .catch(err => console.error('err: ', err));
+  let [{_id: lastFetchedSerial = '000000'} = {}] = await getLatestGalleryDB();
+
+  lastFetchedSerial = parseInt(lastFetchedSerial);
+
+  console.log('Last Gallery fetched: ', lastFetchedSerial);
+  const landingPage = await axios.get(config.hfAddress, config.requestHeaders);
+
+  let [{_id: newestGallerySerial}] = processHFPage(landingPage);
+  newestGallerySerial              = parseInt(newestGallerySerial);
+
+  console.log('Newest Gallery from site: ', newestGallerySerial);
+
+  await saveBatch({lastFetchedSerial, newestGallerySerial});
+
+  return `Updated ${newestGallerySerial - lastFetchedSerial} galleries`;
 };
 
 export default updateNewGalleries;
 
-function updateDatabase(completeGalleries) {
-  const promiseArtistUpdate = Promise.mapSeries(completeGalleries,
-      gallery => updateArtist(gallery));
+async function saveBatch({lastFetchedSerial, newestGallerySerial}) {
+  const batchSize = 20;
+  if (lastFetchedSerial < newestGallerySerial) {
 
-  return Promise.all([
-    bulkInsertGalleries(completeGalleries),
-    promiseArtistUpdate
-  ]);
+    let batchLastSerial =
+            Math.min(newestGallerySerial, lastFetchedSerial + batchSize);
+
+    const galleriesToFetch = [];
+    for (let i = ++lastFetchedSerial; i <= batchLastSerial; i++) {
+      galleriesToFetch.push((i + '').padStart(6, '0'));
+    }
+
+    const fetchedGalleries = await Promise
+        .mapSeries(
+            galleriesToFetch,
+            gallery => fetchGalleryDetails(gallery)
+        );
+
+    await Promise.all([
+      bulkInsertGalleries(fetchedGalleries),
+      updateArtists(fetchedGalleries)
+    ]);
+
+    if (batchLastSerial < newestGallerySerial) {
+      setTimeout(
+          () => saveBatch({
+            lastFetchedSerial: batchLastSerial, newestGallerySerial
+          }),
+          (Math.random() + 1) + 15000
+      );
+    }
+  }
+}
+
+function updateArtists(fetchedGalleries) {
+  const artistUpdatePromises = [];
+  fetchedGalleries.map(gallery =>
+      artistUpdatePromises.push(updateArtist(gallery)));
+  return artistUpdatePromises;
 }

@@ -1,6 +1,6 @@
 /*
 * goal - to update artist document or create new one
-*      - add serialno to artist
+*      - add _id to artist
 *      - ensure required parameters exist with default parameters
 *      
 * input - gallery object
@@ -18,7 +18,7 @@
 import Artist from '../artist-model';
 
 function updateArtist(gallery) {
-  console.log('updating Artists from gallery: ', gallery.serialNo);
+  console.log('updating Artists from gallery: ', gallery._id);
   if (gallery.artists.length) {
     const artistPromiseArray = gallery.artists.map(
         artist => {
@@ -26,7 +26,7 @@ function updateArtist(gallery) {
           artist = (typeof artist === 'object') ? artist.name : artist;
           console.log('Updating artist: ', artist);
           return Artist.update({name: artist}, {
-            $addToSet: {galleries: gallery.serialNo},
+            $addToSet: {galleries: gallery._id},
             //New Gallery might be duplicate or unwanted
             $set     : {cleaned: false}
           }, {new: true, upsert: true, setDefaultsOnInsert: true});

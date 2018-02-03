@@ -13,7 +13,7 @@ const fetchGalleries = (req, res) => {
 
   return Gallery
       .find(searchObject)
-      .sort({serialNo: -1})
+      .sort({_id: -1})
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .then((galleries) => {

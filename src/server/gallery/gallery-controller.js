@@ -16,15 +16,15 @@ import config from '../config';
 const {pageSize} = config.pagination;
 
 const fetchGallery = async (req, res) => {
-  const {serialNo} = req.params;
+  const {_id} = req.params;
 
-  const gallery = await Gallery.find({serialNo});
+  const gallery = await Gallery.find({_id});
 
   res.send(gallery);
 };
 
 const updateGallery = async (req, res) => {
-  const {serialNo} = req.params;
+  const {_id} = req.params;
 
   const {priority, read, downloaded, rating, series, ignore, ignoreReason} = req.body;
 
@@ -51,7 +51,7 @@ const updateGallery = async (req, res) => {
     }
   }
 
-  await Gallery.update({serialNo}, queryObject);
+  await Gallery.update({_id}, queryObject);
 
   res.send({msg: 'Update successful'});
 };
@@ -62,7 +62,7 @@ const fetchGalleries = async (req, res) => {
 
   const galleries = await Gallery
       .find({ignore: {$ne: true}})
-      .sort({serialNo: -1})
+      .sort({_id: -1})
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 
@@ -74,11 +74,11 @@ const fetchGalleries = async (req, res) => {
 const getLatest = async (req, res) => {
   const result = await getLatestDBGallery();
 
-  res.json(result[0].serialNo);
+  res.json(result[0]._id);
 };
 
 const download = async (req, res) => {
-//  let {serialNo} = req.params;
+//  let {_id} = req.params;
   //TODO: Download logic for the gallery  
 };
 

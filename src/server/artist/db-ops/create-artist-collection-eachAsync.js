@@ -4,7 +4,7 @@
 * 
 * input - gallery document
 * output - new artist document if not existing
-*        - push gallery serialNo into galleries array of artist document
+*        - push gallery _id into galleries array of artist document
 *        
 * CODE HIGHLIGHTS
 *   - mongoose cursor.eachAsync 
@@ -22,7 +22,7 @@ const now = moment().format(' h:mm:s');
 
 export default () => {
   console.log(now + ': creating artist collection');
-  const cursor = Gallery.find().sort({serialNo: 1}).cursor();
+  const cursor = Gallery.find().sort({_id: 1}).cursor();
   return cursor
       .eachAsync(gallery => updateArtist(gallery))
       .then(() => {
