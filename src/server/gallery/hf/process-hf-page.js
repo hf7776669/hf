@@ -27,7 +27,7 @@ export default (response) => {
           imageLink = 'https:' + $(galleryNode).find('img').attr('src'),
           link      = 'https://hentaifox.com' +
               $(galleryNode).find('a').attr('href'),
-          serialNo  = $(galleryNode)
+          _id       = $(galleryNode)
               .find('a')
               .attr('href')
               .substr('/gallery/'.length)
@@ -35,7 +35,7 @@ export default (response) => {
               .padStart(6, 0);
 
     galleries.push({
-      name, imageLink, serialNo, link
+      name, imageLink, _id, link
     });
   });
 

@@ -25,7 +25,7 @@ let mongoLink;
 switch (process.env.DB) {
   case 'local':
     mongoLink = config.localMongo;
-    break; 
+    break;
   case 'test':
     mongoLink = config.testMongoConnection;
     break;
@@ -35,8 +35,11 @@ switch (process.env.DB) {
   case 'prod':
     mongoLink = config.prodMongo;
     break;
+  case 'testMongo':
+    mongoLink = config.testMongo;
+    break;
   default:
-    mongoLink = config.localMongo; 
+    mongoLink = config.localMongo;
 }
 
 console.log(`mongoLink`, mongoLink);
@@ -61,7 +64,7 @@ db.once('open', () => {
           return process.exit(1);
         }
         console.log(`\nListening on port ${config.port}`);
-      })
+      });
   /*.listen(6001, '0.0.0.0', (err) => {
     console.log('listening on local network');
   });*/

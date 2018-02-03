@@ -45,14 +45,14 @@ class GalleryFigure extends React.Component {
 
   render() {
     const {gallery}          = this.props;
-    const {serialNo, name}   = gallery;
+    const {_id, name}        = gallery;
     const {imageNo, picLink} = this.state;
     const coverImage         = `https://i.hentaifox.com${picLink}/${imageNo}t.jpg`;
 
     return (
         <Figure>
           <ItemCover>
-            <a href={`https://hentaifox.com/gallery/${serialNo}/`}>
+            <a href={`https://hentaifox.com/gallery/${_id}/`}>
               <LazyLoad once height={350}>
                 <Img src={coverImage}
                     // src={'https://i.hentaifox.com/002/1139352/thumb.jpg'}

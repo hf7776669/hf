@@ -11,7 +11,9 @@ import Pagination from '../pagination';
 import {ContentBody, Search} from './content-styles';
 
 const sortGalleries = (
-    galleries, sortParameter = 'serialNo', sortDirection = 'desc') => {
+    galleries,
+    sortParameter = '_id',
+    sortDirection = 'desc') => {
   let comparator;
   switch (sortDirection) {
     case 'asc':
@@ -179,7 +181,7 @@ class Content extends React.Component {
                     })
                     .map(
                         gallery => (
-                            <Gallery key={gallery.serialNo}
+                            <Gallery key={gallery._id}
                                      gallery={gallery}
                                      getArtistGalleries={this.getArtistGalleries}
                                      filterGalleries={this.filterGalleries}>

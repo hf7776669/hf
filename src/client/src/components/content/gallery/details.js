@@ -45,7 +45,7 @@ class Details extends Component {
   }
 
   render() {
-    const {name, link, tags, pages, serialNo, artists, parodies, groups} = this.props.gallery;
+    const {name, link, tags, pages, _id, artists, parodies, groups} = this.props.gallery;
 
     const {getArtistGalleries, filterGalleries, position} = this.props;
 
