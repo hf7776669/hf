@@ -20,14 +20,14 @@ import moment from 'moment';
 
 const now = moment().format(' h:mm:s');
 
-export default () => {
+export default async () => {
   console.log(now + ': creating artist collection');
   const cursor = Gallery.find().sort({_id: 1}).cursor();
-  return cursor
-      .eachAsync(gallery => updateArtist(gallery))
-      .then(() => {
-        console.log(`${moment(startTime)
-            .format('h:mm:ss')}: Started creating new artist collection`);
-        console.log(now + ': Created artist collection');
-      });
+  await cursor
+      .eachAsync(gallery => updateArtist(gallery));
+
+  console.log(`${moment(startTime)
+      .format('h:mm:ss')}: Started creating new artist collection`);
+  console.log(now + ': Created artist collection');
 }
+ 

@@ -20,7 +20,7 @@ import parseGalleryDetails from './parse-gallery-details';
 const now = moment().format('hh:mm:ss');
 
 const getGallery = (gallery_id, delay = 2000) =>
-    Promise
+    Promise 
         .delay(Math.random() * delay)
         .then(() => console.log(
             `${now}: fetching gallery: ${gallery_id}`))
