@@ -23,23 +23,17 @@ require('dotenv-safe').load();
 let mongoLink;
 
 switch (process.env.DB) {
-  case 'local':
-    mongoLink = config.localMongo;
+  case 'dev':
+    mongoLink = config.devMongo;
     break;
   case 'test':
-    mongoLink = config.testMongoConnection;
-    break;
-  case 'server':
-    mongoLink = config.mongoConnection;
-    break;
-  case 'prod':
-    mongoLink = config.prodMongo;
-    break;
-  case 'testMongo':
     mongoLink = config.testMongo;
     break;
+  case 'server':
+    mongoLink = config.prodConnection;
+    break;
   default:
-    mongoLink = config.localMongo;
+    mongoLink = config.devMongo;
 }
 
 console.log(`mongoLink`, mongoLink);

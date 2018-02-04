@@ -20,8 +20,11 @@ import config from '../../config';
 
 const updateNewGalleries = async () => {
   console.log('Processing new galleries');
+  const [lastFetchedGallery = {}] = await getLatestGalleryDB();
 
-  let [{_id: lastFetchedSerial = '000000'} = {}] = await getLatestGalleryDB();
+  let {_id: lastFetchedSerial, serialNo} = lastFetchedGallery;
+
+  lastFetchedSerial = (serialNo ? serialNo : lastFetchedSerial) || '000000';
 
   lastFetchedSerial = parseInt(lastFetchedSerial);
 
