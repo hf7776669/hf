@@ -49,7 +49,7 @@ class Gallery extends Component {
   }
 
   render() {
-    const {gallery, getArtistGalleries, filterGalleries} = this.props;
+    const {gallery, getArtistGalleries,getGroupGalleries, filterGalleries} = this.props;
 
     const {window, xPos} = this.state;
 
@@ -65,6 +65,7 @@ class Gallery extends Component {
             {this.state.isHovering &&
             <Details gallery={gallery}
                      getArtistGalleries={getArtistGalleries}
+                     getGroupGalleries={getGroupGalleries}
                      filterGalleries={filterGalleries}
                      position={detailsPosition}
             />}

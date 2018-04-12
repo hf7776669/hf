@@ -9,7 +9,9 @@
 *       function which is to be executed sequentially over each value
 */
 
-import axios from 'axios';
+//import axios from 'axios';
+const cloudscraper = require('cloudscraper');
+//import cloudscraper from 'cloudscraper';
 import Promise from 'bluebird';
 import processHFPage from './process-hf-page';
 import getLatestGalleryDB from '../db-ops/get-latest-gallery';
@@ -17,6 +19,14 @@ import fetchGalleryDetails from './fetch-gallery-details';
 import bulkInsertGalleries from '../db-ops/bulk-insert-galleries';
 import updateArtist from '../../artist/db-ops/artist-add-gallery';
 import config from '../../config';
+
+const axios = {};
+axios.get = (address) => new Promise ((resolve, reject) => 
+  cloudscraper.get(address, (error, response, body) => {
+    if (error) {return reject(error)}
+    resolve({response, body})
+  })
+)
 
 const updateNewGalleries = async () => {
   console.log('Processing new galleries');
@@ -26,7 +36,7 @@ const updateNewGalleries = async () => {
   lastFetchedSerial = parseInt(lastFetchedSerial);
 
   console.log('Last Gallery fetched: ', lastFetchedSerial);
-  const landingPage = await axios.get(config.hfAddress, config.requestHeaders);
+  const {body: landingPage} = await axios.get(config.hfAddress, config.requestHeaders);
 
   let [{_id: newestGallerySerial}] = processHFPage(landingPage);
   newestGallerySerial              = parseInt(newestGallerySerial);
@@ -44,17 +54,17 @@ async function saveBatch({lastFetchedSerial, newestGallerySerial}) {
   const batchSize = 20;
   if (lastFetchedSerial < newestGallerySerial) {
 
-    let batchLastSerial =
+    let batchLastSerial = 
             Math.min(newestGallerySerial, lastFetchedSerial + batchSize);
 
     const galleriesToFetch = [];
     for (let i = ++lastFetchedSerial; i <= batchLastSerial; i++) {
-      galleriesToFetch.push((i + '').padStart(6, '0'));
+      (i !== 46163  ) && galleriesToFetch.push((i + '').padStart(6, '0'));
     }
 
     const fetchedGalleries = await Promise
         .mapSeries(
-            galleriesToFetch,
+            galleriesToFetch, 
             gallery => fetchGalleryDetails(gallery)
         );
 

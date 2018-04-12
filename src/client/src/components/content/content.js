@@ -45,6 +45,7 @@ class Content extends React.Component {
   constructor(props) {
     super(props);
     this.getArtistGalleries = this.getArtistGalleries.bind(this);
+    this.getGroupGalleries = this.getGroupGalleries.bind(this);
     this.filterGalleries    = this.filterGalleries.bind(this);
     this.filterCleanArtists = this.filterCleanArtists.bind(this);
     this.getPage            = this.getPage.bind(this);
@@ -72,6 +73,21 @@ class Content extends React.Component {
         });
   }
 
+  getGroupGalleries(groupName) {
+    return axios
+        .get(`/api/groups/${groupName}`)
+        .then((axiosResult) => {
+          const {data} = axiosResult;
+          this.setState(() => ({
+            galleries : data.length ? sortGalleries(data) : [],
+            artistView: false,
+            groupView: true,
+            groupName,
+            strFilter : ''
+          }));
+        });
+  }
+  
   sortGalleries(parameter, sortDirection = 1) {
     const sortedGalleries = sortGalleries(this.state.galleries, parameter,
         sortDirection);
@@ -184,6 +200,7 @@ class Content extends React.Component {
                             <Gallery key={gallery._id}
                                      gallery={gallery}
                                      getArtistGalleries={this.getArtistGalleries}
+                                     getGroupGalleries={this.getGroupGalleries}
                                      filterGalleries={this.filterGalleries}>
                             </Gallery>
                         )

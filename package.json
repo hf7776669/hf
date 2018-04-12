@@ -1,39 +1,40 @@
 {
-  "name"           : "hf",
-  "version"        : "1.0.0",
-  "description"    : "",
-  "license"        : "ISC",
-  "author"         : "",
-  "main"           : "index.js",
-  "scripts"        : {
+  "name": "hf",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "scripts": {
     "start": "cd src\\client && npm start"
   },
   "devDependencies": {
-    "babel-preset-env"  : "^1.6.1",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "babel-register"    : "^6.26.0"
+    "babel-register": "^6.26.0"
   },
-  "dependencies"   : {
-    "axios"                 : "^0.17.1",
-    "babel-preset-stage-0"  : "^6.24.1",
-    "bluebird"              : "^3.5.1",
-    "body-parser"           : "^1.18.2",
-    "cheerio"               : "^1.0.0-rc.2",
-    "dotenv-safe"           : "^4.0.4",
-    "express"               : "^4.16.2",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "cheerio": "^1.0.0-rc.2",
+    "cloudscraper": "^1.5.0",
+    "dotenv-safe": "^4.0.4",
+    "express": "^4.16.2",
     "express-promise-router": "^2.0.0",
-    "fs"                    : "0.0.1-security",
-    "he"                    : "^1.1.1",
-    "moment"                : "^2.20.1",
-    "mongoose"              : "^4.13.7",
-    "spdy"                  : "^3.4.7"
+    "fs": "0.0.1-security",
+    "he": "^1.1.1",
+    "moment": "^2.20.1",
+    "mongoose": "^4.13.7",
+    "spdy": "^3.4.7"
   },
-  "nodemonConfig"  : {
+  "nodemonConfig": {
     "ignore": [
       "src/client/*",
       "docs/*",
       "**/*.json"
     ],
-    "delay" : "250"
+    "delay": "250"
   }
 }

@@ -47,7 +47,7 @@ class Details extends Component {
   render() {
     const {name, link, tags, pages, _id, artists, parodies, groups} = this.props.gallery;
 
-    const {getArtistGalleries, filterGalleries, position} = this.props;
+    const {getArtistGalleries,getGroupGalleries, filterGalleries, position} = this.props;
 
     const Container = position === 'left' ? ContainerLeft : ContainerRight;
 
@@ -102,10 +102,9 @@ class Details extends Component {
                   <Item>Groups:</Item>
                   {groups.map(group => (
                       <Li key={group}>
-                        <A filter={group}
-                           filterGalleries={filterGalleries}>
-                          {group}
-                        </A>
+                        <a onClick={() => getGroupGalleries(
+                            group)}>{group}
+                        </a>
                       </Li>
                   ))}
                 </Fragment>
