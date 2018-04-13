@@ -7,7 +7,6 @@
 *   - express Promise Router is a direct replacement for express Router 
 */
 
-
 import expressPromiseRouter from 'express-promise-router';
 
 import galleryController from './gallery-controller';
