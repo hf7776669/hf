@@ -45,7 +45,7 @@ class Content extends React.Component {
   constructor(props) {
     super(props);
     this.getArtistGalleries = this.getArtistGalleries.bind(this);
-    this.getGroupGalleries = this.getGroupGalleries.bind(this);
+    this.getGroupGalleries  = this.getGroupGalleries.bind(this);
     this.filterGalleries    = this.filterGalleries.bind(this);
     this.filterCleanArtists = this.filterCleanArtists.bind(this);
     this.getPage            = this.getPage.bind(this);
@@ -63,12 +63,17 @@ class Content extends React.Component {
     return axios
         .get(`/api/artists/${artistName}`)
         .then((axiosResult) => {
-          const {data} = axiosResult;
+          const {data: artist}                      = axiosResult;
+          const {galleries, cleaned, cleanedBefore} = artist;
           this.setState(() => ({
-            galleries : data.length ? sortGalleries(data) : [],
-            artistView: true,
+            galleries          : galleries.length
+                ? sortGalleries(galleries)
+                : [],
+            artistView         : true,
             artistName,
-            strFilter : ''
+            artistCleaned      : cleaned,
+            artistCleanedBefore: cleanedBefore,
+            strFilter          : ''
           }));
         });
   }
@@ -81,13 +86,13 @@ class Content extends React.Component {
           this.setState(() => ({
             galleries : data.length ? sortGalleries(data) : [],
             artistView: false,
-            groupView: true,
+            groupView : true,
             groupName,
             strFilter : ''
           }));
         });
   }
-  
+
   sortGalleries(parameter, sortDirection = 1) {
     const sortedGalleries = sortGalleries(this.state.galleries, parameter,
         sortDirection);
@@ -143,7 +148,11 @@ class Content extends React.Component {
   }
 
   render() {
-    const {galleries, strFilter, page, artistView, artistName, hideCleanArtist} = this.state;
+    const {
+            galleries, strFilter, page, artistView, artistName, hideCleanArtist,
+            artistCleaned, artistCleanedBefore
+          } = this.state;
+    
     return (
         <div>
           <Search>
@@ -162,8 +171,11 @@ class Content extends React.Component {
             <button onClick={() => this.ignoreArtist(artistName)}>Ignore
               Artist</button>}
             {artistView &&
-            <button onClick={() => this.artistClean(artistName)}>Artist
-              Clean</button>}
+            <button disabled={artistCleaned} onClick={() => this.artistClean(artistName)}>
+              {!artistCleanedBefore
+                  ? 'Artist Clean'
+                  : 'Clean Again'}
+            </button>}
 
             {(!artistView && !hideCleanArtist) &&
             <button onClick={() => this.filterCleanArtists()}>Hide

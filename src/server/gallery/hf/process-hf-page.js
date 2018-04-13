@@ -12,10 +12,10 @@
  *  are no longer needed
 */
 
-import cheerio from 'cheerio';
+import cheerio from 'cheerio' ;
 
 export default (response) => {
-  const $          = cheerio.load(response.data);
+  const $          = cheerio.load(response);
   let galleryNodes = [];
   let galleries    = [];
   $('.galleries_overview')

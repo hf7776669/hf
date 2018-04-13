@@ -123,9 +123,6 @@ async function getGalleryStatus(gallery) {
 
     const artists = await Promise.all(artistPromises);
 
-    artists.map(({ignore, cleaned}) => console.log(
-        `artist ignore: ${ignore}, cleaned: ${cleaned}`));
-
     result = artists.reduce((acc, currentValue) => {
       return ({
         ignore : !!(acc.ignore && currentValue.ignore),

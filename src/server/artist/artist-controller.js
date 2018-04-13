@@ -23,32 +23,26 @@ const fetchArtist = async (req, res) => {
 
   let galleries = await Promise.all(galleryPromises);
 
-  res.send(galleries.filter(gallery => !gallery.ignore));
+  res.send({
+    ...artist.toJSON(), /*findOne needs this additional step*/
+    galleries: galleries.filter(gallery => !gallery.ignore)
+  });
 };
 
 const updateArtist = async (req, res) => {
   const {artistName} = req.params;
   console.log(`request body: `, req.body);
-  const {track, read, ignore, ignoreReason, priority, cleaned, observations} = req.body;
 
-  const updateObject = {};
-
-  (read !== undefined) && (updateObject.read = read);
-  (ignore !== undefined) && (updateObject.ignore = ignore);
-  (priority !== undefined) && (updateObject.priority = priority);
-  (ignoreReason !== undefined) && (updateObject.ignoreReason = ignoreReason);
-  (track !== undefined) && (updateObject.track = track);
-  (cleaned !== undefined) && (updateObject.cleaned = cleaned);
-  (observations !== undefined) && (updateObject.observations = observations);
-
+  const updateObject = {...req.body};
+  const {ignore} = req.body
+  
   console.log(artistName);
   console.log(`updateObject`, updateObject);
 
-  await Artist.findOneAndUpdate({name: artistName},
-      {$set: updateObject});
+  await Artist.findOneAndUpdate({name: artistName}, updateObject);
 
-  if (ignore === true) await Gallery.update({artists: artistName},
-      {$set: updateObject}, {multi: true});
+  ignore === true && await Gallery.update({artists: artistName},
+      {$set: {ignore}}, {multi: 1});
 
   res.send(`${artistName} update successful`);
 };
