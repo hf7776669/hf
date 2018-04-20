@@ -7,29 +7,55 @@ export default class Example extends React.Component {
   render() {
     const {activePage, fetchPage} = this.props;
 
-    let pageArray = [];
+    let pageArray      = [];
 
-    if (activePage <= 3) {
-      for (let i = 1; i < 7; i++) {
-        pageArray.push(i);
-      }
-    } else {
-      for (let i = activePage - 2; i < activePage + 4; i++) {
-        pageArray.push(i);
-      }
+    const furtherPages = (page) => [
+      page - 1,
+      page,
+      page + 1,
+      Math.ceil((page + 2) / 5) * 5,
+      Math.ceil((page + 7) / 10) * 10,
+      Math.ceil((page + 17) / 50) * 50
+    ];
+
+    switch (true) {
+      case(activePage < 6) :
+
+        pageArray = [
+          2, 3,
+          ...furtherPages(5)
+        ];
+        break;
+      case (activePage === 6):
+
+        pageArray = [
+          2, 4, 
+          ...furtherPages(6)
+        ];
+        break;
+      case (activePage < 17) :
+        pageArray = [
+          2,
+          Math.floor((activePage - 2) / 5) * 5,
+          ...furtherPages(activePage)
+        ];
+        break;
+      default:
+        pageArray = [
+          Math.floor((activePage - 7) / 10) * 10,
+          Math.floor((activePage - 2) / 5) * 5,
+          ...furtherPages(activePage)
+        ];
     }
+
 
     return (
         <Pagination>
-          <PaginationItem disabled={activePage === 1}
+          <PaginationItem active={activePage === 1}
                           onClick={() => fetchPage(1)}>
             <PaginationLink>
               First
             </PaginationLink>
-          </PaginationItem>
-
-          <PaginationItem disabled={activePage === 1}>
-            <PaginationLink previous onClick={() => fetchPage(activePage - 1)}/>
           </PaginationItem>
 
           {pageArray.map((i) => (
@@ -43,9 +69,6 @@ export default class Example extends React.Component {
             <PaginationLink next onClick={() => fetchPage(activePage + 1)}/>
           </PaginationItem>
 
-          <PaginationItem disabled={activePage === 1}>
-            <PaginationLink>Last</PaginationLink>
-          </PaginationItem>
         </Pagination>
     );
   }

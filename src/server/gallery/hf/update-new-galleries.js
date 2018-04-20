@@ -21,12 +21,12 @@ import updateArtist from '../../artist/db-ops/artist-add-gallery';
 import config from '../../config';
 
 const axios = {};
-axios.get = (address) => new Promise ((resolve, reject) => 
-  cloudscraper.get(address, (error, response, body) => {
-    if (error) {return reject(error)}
-    resolve({response, body})
-  })
-)
+axios.get   = (address) => new Promise((resolve, reject) =>
+    cloudscraper.get(address, (error, response, body) => {
+      if (error) {return reject(error);}
+      resolve({response, body});
+    })
+);
 
 const updateNewGalleries = async () => {
   console.log('Processing new galleries');
@@ -39,10 +39,17 @@ const updateNewGalleries = async () => {
   lastFetchedSerial = parseInt(lastFetchedSerial);
 
   console.log('Last Gallery fetched: ', lastFetchedSerial);
-  const {body: landingPage} = await axios.get(config.hfAddress, config.requestHeaders);
+  const {body: landingPage} = await axios.get(config.hfAddress,
+      config.requestHeaders);
 
-  let [{_id: newestGallerySerial}] = processHFPage(landingPage);
-  newestGallerySerial              = parseInt(newestGallerySerial);
+  let [{_id: newestGallerySerial}= {}] = processHFPage(landingPage);
+
+  if (!newestGallerySerial) {
+    throw new Error('Hentaifox Error. Please check' +
+        ' site.');
+  }
+      
+  newestGallerySerial = parseInt(newestGallerySerial);
 
   console.log('Newest Gallery from site: ', newestGallerySerial);
 
@@ -57,17 +64,17 @@ async function saveBatch({lastFetchedSerial, newestGallerySerial}) {
   const batchSize = 20;
   if (lastFetchedSerial < newestGallerySerial) {
 
-    let batchLastSerial = 
+    let batchLastSerial =
             Math.min(newestGallerySerial, lastFetchedSerial + batchSize);
 
     const galleriesToFetch = [];
     for (let i = ++lastFetchedSerial; i <= batchLastSerial; i++) {
-      (i !== 46163  ) && galleriesToFetch.push((i + '').padStart(6, '0'));
+      (i !== 46163) && galleriesToFetch.push((i + '').padStart(6, '0'));
     }
 
     const fetchedGalleries = await Promise
         .mapSeries(
-            galleriesToFetch, 
+            galleriesToFetch,
             gallery => fetchGalleryDetails(gallery)
         );
 
